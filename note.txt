@@ -1,0 +1,10 @@
+std::getline() : Cette fonction permet de lire une ligne entière depuis une entrée, comme une chaîne de caractères.
+
+std::strtok() : Cette fonction permet de diviser une chaîne de caractères en plusieurs sous-chaînes en utilisant un délimiteur.
+
+std::sscanf() : Cette fonction permet de scanner une chaîne de caractères pour extraire des valeurs selon un format spécifié.
+
+std::atoi() : Cette fonction permet de convertir une chaîne de caractères en entier.
+
+std::atof() : Cette fonction permet de convertir une chaîne de caractères en flottant.
+

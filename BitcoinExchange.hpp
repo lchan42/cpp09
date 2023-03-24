@@ -19,7 +19,7 @@ class BitEx{
 
 	private:
 		void	parse(std::string inputPath);
-		void	
+		//void
 		BitExMap	_dataMap;
 		BitExMap	_imputMap;
 }
