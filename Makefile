@@ -6,17 +6,18 @@
 #    By: lchan <lchan@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/09/16 15:50:50 by lchan             #+#    #+#              #
-#    Updated: 2022/10/24 15:38:45 by lchan            ###   ########.fr        #
+#    Updated: 2023/03/28 17:24:50 by lchan            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME	=	cpp08ex01
-SRCS	=	main.cpp Span.cpp
-HEADER	=	Span.hpp
+SRCS	=	main.cpp
+HEADER	=	MyException.hpp
 OBJS	=	$(SRCS:.cpp=.o)
 COMPIL	=	c++
-FLAGS	=	-std=c++98 -Wall -Wextra -Werror -Wno-unused -g3
+FLAGS	=	-std=c++98 -Wall -Wextra  -Wno-unused -g3
 
+#-Werror
 
 # $< = dependances | $@ = regles -> .o
 

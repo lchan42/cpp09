@@ -2,6 +2,7 @@
 #define MYEXCEPTION_HPP
 
 #include <exception>
+#include <iostream>
 
 // note : throw() in "virtual ~MyException() throw()" means that the function will not throw expection
 // note : virtual ~MyException il mendatory because of the ineritance of the class
@@ -12,17 +13,18 @@
 
 class MyException : public std::exception {
 	public:
-		MyException(const char* error) 					: _errorMessage(error) {}
-		MyException(const MyException& cpy) 			{ *this = cpy;}
+		MyException(const char* error)					: _errorMessage(std::string(error)) {}
+		MyException(std::string &error)					: _errorMessage(error) {}
+		MyException(std::string error)					: _errorMessage(error) {}
+		MyException(const MyException& cpy)				{ *this = cpy;}
 		MyException& operator= (const MyException& cpy)	{ _errorMessage = cpy._errorMessage; return *this;}
 
 		virtual ~MyException() throw()					{}
 
-		virtual const char* what() const throw() 		{ return (_errorMessage); }
-		// virtual const char* what() const throw() 		{ return (("error: " + std::string(_errorMessage)).c_str()); }
+		virtual const char* what() const throw() 		{ return (_errorMessage.c_str()); }
 
 	private :
-		const char *_errorMessage;
+		std::string	_errorMessage;
 };
 
 #endif

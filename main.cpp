@@ -1,61 +1,61 @@
 // fstream::open / fstream::close
-#include <fstream>      // std::fstream
+
 #include <iostream>
 #include "MyException.hpp"
+#include "BitcoinExchange.hpp"
+#include <fstream>
 
+#define _RPL_OPENFILE(path) std::string(path) + ": open success"
+#define _ERR_OPENFILE(path) "fail to open " + std::string(path)
 
-// #define _RPL_OPENFILE (path) path + ": open success"
-#define _RPL_OPENFILE(path) ("" + path + ": open success")
-#define _ERR_OPENFILE (path) ("fail to open [" + path + "]")
+// note : the use of exception is not really usefull here. It was just for practice.
 
-
-// void	checkline () {
-
-// }
-
-// note : apparenylt we have to go through a string to use the define forme _RPL_OPENFILE(path)
-void	openFile (const char *path) {
-
-	std::fstream	fs(path);
-	std::string		tmp(path);
-	// const char*		msg2 = msg.c_str();
-
+void	openFile (const char *path, std::ifstream &fs)
+{
+	fs.open(path);
 	if (fs.is_open()) {
-		std::cout << _RPL_OPENFILE(tmp) << std::endl;
-	// } else {
-	// 	throw MyException((_ERR_OPENFILE(tmp)).c_str());
-	// }
+		std::cout << _RPL_OPENFILE(path) << std::endl;
+	} else {
+		throw MyException(_ERR_OPENFILE(path));
+	}
 }
 
-int	main (int ac, char **av) {
+void	closeFile(std::ifstream &fs)
+{
+	if (fs.is_open()){
+		fs.close();
+	}
+}
+
+bool	TryOpenFiles(const char *path, std::ifstream &fs1, std::ifstream &fs2)
+{
 	try {
-		openFile("data.csv");
+		openFile("data.csv", fs1);
+		openFile(path, fs2);
 	}
 	catch (std::exception &e) {
 		std::cout << "error: "<< e.what() << std::endl;
+		closeFile(fs1);
+		closeFile(fs2);
 		return (false);
 	}
 	return (true);
 }
 
+int	main (int ac, char **av)
+{
+	std::ifstream	fs1, fs2;
 
+	if (ac >= 2 && TryOpenFiles(av[1], fs1, fs2)){
+		std::cout << "try again with correct imput" << std::endl;
 
+	}
+}
 
-// int main (int ac, char **av) {
+	// // BitEx			BitEx;
+	// BitEx.setFstreams(fs1, fs2);
 
-// 	// std::fstream	fs(av[1]);
-// 	std::fstream	fs("data.csv");
-// 	std::string		line;
-
-// 	// fs.open ("data.csv", std::fstream::in | std::fstream::out | std::fstream::app);
-// 	if (fs.is_open()){
-// 		// while(getline (file, line))
-// 		std::cout << "open success" << std::endl;
-// 		line << fs.rdbuf();
-// 		fs.close();
-// 	}
-// 	else {
-// 		std::cout << "open error" << std::endl;
-// 	}
-// 	return 0;
-// }
+	// BitEx.compute();
+	// else {
+	// 	std::cout << "try again with correct imput" << std::endl;
+	// }
