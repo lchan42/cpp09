@@ -7,31 +7,42 @@
 # include <map>
 # include <fstream>
 
-typedef std::map<std::string, unsigned int>	BitExMap;
+// typedef std::map<std::string, unsigned int>	BitExMap;
 
+typedef struct s_date{
+	unsigned int	year;
+	unsigned int	month;
+	unsigned int	day;
+} t_date;
+
+typedef struct s_lineStruct{
+	std::string		
+} t_lineStruct;
+
+typedef std::map<int, int>	BitExMap;
 class BitEx{
 	public:
 		BitEx();
 		BitEx(std::string inputPath);
-		BitEx(std::fstream fs1, std::fstream fs2);
-		BitEx(BitEx const &cpy);
+		// BitEx(BitEx const &cpy);
 		~BitEx();
 
 		// BitEx & operator=(BitEx const &rhs);
-
+		void	tryOpenFile(const char *path);
 		void	compute();
-		void	setFstreams(std::fstream data, std::fstream infile);
-
 	private:
 
-		std::fstream	_fsData;
-		std::fstream	_fsInFile;
+		bool			_fileFlag;
+		std::ifstream	_ifsData;
+		std::ifstream	_ifsInput;
 		BitExMap		_dataMap;
 		BitExMap		_imputMap;
 		void			_closeFiles();
+		void			_openFile(const char *path, std::ifstream &fs);
+
 		// void			_setMap();
 
-		// void			parse(std::string inputPath);
+		void			_parse();
 };
 
 #endif

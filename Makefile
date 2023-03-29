@@ -6,13 +6,13 @@
 #    By: lchan <lchan@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/09/16 15:50:50 by lchan             #+#    #+#              #
-#    Updated: 2023/03/28 17:24:50 by lchan            ###   ########.fr        #
+#    Updated: 2023/03/29 13:46:57 by lchan            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME	=	cpp08ex01
-SRCS	=	main.cpp
-HEADER	=	MyException.hpp
+NAME	=	cpp09ex00
+SRCS	=	main.cpp BitcoinExchange.cpp
+HEADER	=	MyException.hpp BitcoinExchange.hpp
 OBJS	=	$(SRCS:.cpp=.o)
 COMPIL	=	c++
 FLAGS	=	-std=c++98 -Wall -Wextra  -Wno-unused -g3
