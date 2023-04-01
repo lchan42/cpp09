@@ -16,9 +16,9 @@ int	main (int ac, char **av)
 		BitEx.tryOpenFile(av[1]);
 		BitEx.compute();
 	}
-	// else{
-	// 	std::cout << "try again with correct imput" << std::endl;
-	// }
+	else {
+		std::cout << "try again with correct imput" << std::endl;
+	}
 }
 
 

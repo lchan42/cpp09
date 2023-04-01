@@ -16,7 +16,7 @@ typedef struct s_date{
 } t_date;
 
 typedef struct s_lineStruct{
-	std::string		
+	std::string	test;
 } t_lineStruct;
 
 typedef std::map<int, int>	BitExMap;
@@ -43,6 +43,9 @@ class BitEx{
 		// void			_setMap();
 
 		void			_parse();
+ 		// bool			_checkFistLine();
+		void			_checkFistLine();
+
 };
 
 #endif

@@ -90,16 +90,46 @@ void BitEx::compute()
 	}
 }
 
-void BitEx::_parse()
+void BitEx::_parse() // real compute function
 {
+	// std::string date;
+	// std::string rate;
 	std::string line;
-	std::string date;
-	std::string rate;
-j
-	std::getline(_ifsData, line);
 
-	std::cout << "first line is : "<<  line << std::endl;
-
+	// std::getline(_ifsData, line);
+	try {
+		_checkFistLine();
+	}
+	catch (std::exception &e) {
+		std::cout << "error: " << e.what() << std::endl;
+	}
+	std::getline(_ifsInput, line);
+	std::cout << "secondline line is : "<<  line << std::endl;
 }
 
-void	BitEx::_
+void	BitEx::_checkFistLine(){
+
+	std::string line;
+
+	std::getline(_ifsInput, line);
+	if (line != "date | value") {
+		throw MyException(_ERR_IMPUT_FIRSTLINE(line));
+	} else  {
+		std::cout << "fist line is correct" << std::endl;
+	}
+ }
+
+// bool	BitEx::_checkFistLine(){
+
+// 	std::string line;
+
+// 	std::getline(_ifsInput, line);
+// 	if (line == "date | value") {
+// 		std::cout << "fist line is correct" << std::endl;
+// 		return true;
+// 	} else {
+// 		std::cout << "error: first line is incorrect" << std::endl;
+// 		return false;
+// 	}
+//  }
+
