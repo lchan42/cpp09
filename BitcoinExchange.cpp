@@ -5,14 +5,11 @@
 /********************** coplien **********************/
 /*****************************************************/
 
-BitEx::BitEx() : _fileFlag(false)
-{
+BitEx::BitEx() : _fileFlag(false){
 	std::cout << "BitEx constructor called" << std::endl;
-	// std::cout << "BitEx needs at least an entryFile " << std::endl;
 }
 
-BitEx::BitEx(std::string inputPath) : _fileFlag(false)
-{
+BitEx::BitEx(std::string inputPath) : _fileFlag(false){
 	(void)inputPath;
 	// tryOpenFile(inputPath.c_str());
 	std::cout << "BitEx constructor called" << std::endl;
@@ -78,48 +75,60 @@ void BitEx::tryOpenFile(const char *path)
 
 void BitEx::compute()
 {
-	if (_fileFlag == true)
-	{
-		_parse();
+	if (_fileFlag == true) {
+		_parse(_ifsData, ",");
+		_parse(_ifsInput, " | ");
 		std::cout << "ready to compute\n"
 				  << std::endl;
 	}
-	else
-	{
+	else {
 		std::cout << "error : missing files" << std::endl;
 	}
 }
 
-void BitEx::_parse() // real compute function
+void BitEx::_parse(std::ifstream &ifs, const std::string sep) // real compute function
 {
-	// std::string date;
-	// std::string rate;
 	std::string line;
 
-	// std::getline(_ifsData, line);
 	try {
-		_checkFistLine();
+		_checkFirstLine(ifs, sep);
+		_buildMap(ifs, sep);
 	}
 	catch (std::exception &e) {
 		std::cout << "error: " << e.what() << std::endl;
 	}
-	std::getline(_ifsInput, line);
+	std::getline(ifs, line);
 	std::cout << "secondline line is : "<<  line << std::endl;
 }
 
-void	BitEx::_checkFistLine(){
+
+/* this function check if the first line of each file is correct or not */
+void	BitEx::_checkFirstLine(std::ifstream &ifs, const std::string sep){
 
 	std::string line;
 
-	std::getline(_ifsInput, line);
-	if (line != "date | value") {
-		throw MyException(_ERR_IMPUT_FIRSTLINE(line));
-	} else  {
-		std::cout << "fist line is correct" << std::endl;
+	std::getline(ifs, line);
+	if (&ifs == &_ifsData && line != "date" + sep + "exchange_rate"){
+		throw MyException(_ERR_IMPUT_FIRSTLINE(".csv", line));
 	}
- }
+	else if (&ifs == &_ifsInput && line != "date" + sep + "value") {
+		throw MyException(_ERR_IMPUT_FIRSTLINE("input.txt", line));
+	}
+	else  {
+		std::cout << "first line is correct: " << line << std::endl;
+	}
+}
 
-// bool	BitEx::_checkFistLine(){
+void	BitEx::_buildMap(std::ifstream &ifs, const std::string sep){
+	std::string line;
+
+
+}
+
+bool	bitEx::_checkString(std::string str){
+
+}
+// bool	BitEx::_checkFirstLine(){
 
 // 	std::string line;
 
@@ -131,5 +140,5 @@ void	BitEx::_checkFistLine(){
 // 		std::cout << "error: first line is incorrect" << std::endl;
 // 		return false;
 // 	}
-//  }
+//
 

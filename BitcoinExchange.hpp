@@ -20,6 +20,7 @@ typedef struct s_lineStruct{
 } t_lineStruct;
 
 typedef std::map<int, int>	BitExMap;
+
 class BitEx{
 	public:
 		BitEx();
@@ -32,20 +33,24 @@ class BitEx{
 		void	compute();
 	private:
 
+		// Variables
 		bool			_fileFlag;
+		bool			_dataMapFlag;
+		bool			_inputMapFlag;
+
 		std::ifstream	_ifsData;
 		std::ifstream	_ifsInput;
 		BitExMap		_dataMap;
-		BitExMap		_imputMap;
+		BitExMap		_inputMap;
+
+		// functions
 		void			_closeFiles();
 		void			_openFile(const char *path, std::ifstream &fs);
 
-		// void			_setMap();
-
-		void			_parse();
- 		// bool			_checkFistLine();
-		void			_checkFistLine();
-
+		void			_parse(std::ifstream &ifs, const std::string sep);
+		void			_checkFirstLine(std::ifstream &ifs, const std::string sep);
+		void			_buildMap(std::ifstream &ifs, const std::string sep);
+		bool			_checkString(const char* str)
 };
 
 #endif

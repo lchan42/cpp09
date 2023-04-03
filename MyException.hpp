@@ -13,20 +13,20 @@
 
 #define _RPL_OPENFILE(s1) std::string(s1) + ": open success"
 #define _ERR_OPENFILE(s1) std::string(s1) + ": fail to open "
-#define _ERR_IMPUT_FIRSTLINE(s1) std::string(s1) + ": from imput file seems incorrect"
+#define _ERR_IMPUT_FIRSTLINE(path, s1) std::string(s1) + "from" + std::string(path) + "seems incorrect"
 
 
 class MyException : public std::exception {
 	public:
-		MyException(const char* error)					: _errorMessage(std::string(error)) {}
-		MyException(std::string &error)					: _errorMessage(error) {}
-		MyException(std::string error)					: _errorMessage(error) {}
-		MyException(const MyException& cpy)				{ *this = cpy;}
-		MyException& operator= (const MyException& cpy)	{ _errorMessage = cpy._errorMessage; return *this;}
+		MyException(const char* error)	:_errorMessage(std::string(error))	{}
+		MyException(std::string &error)	: _errorMessage(error)				{}
+		MyException(std::string error)	: _errorMessage(error)				{}
+		MyException(const MyException& cpy)									{ *this = cpy;}
+		MyException& operator= (const MyException& cpy)						{ _errorMessage = cpy._errorMessage; return *this;}
 
-		virtual ~MyException() throw()					{}
+		virtual ~MyException() throw()										{}
 
-		virtual const char* what() const throw() 		{ return (_errorMessage.c_str()); }
+		virtual const char* what() const throw() 							{ return (_errorMessage.c_str()); }
 
 	private :
 		std::string	_errorMessage;
