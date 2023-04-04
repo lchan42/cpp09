@@ -11,9 +11,13 @@
 // note : this class is a personnalised excetion class.
 // note : std::exception what() prototype is "virtual const char* what() const throw();"
 
-#define _RPL_OPENFILE(s1) std::string(s1) + ": open success"
-#define _ERR_OPENFILE(s1) std::string(s1) + ": fail to open "
-#define _ERR_IMPUT_FIRSTLINE(path, s1) std::string(s1) + "from" + std::string(path) + "seems incorrect"
+
+
+#define _RPL_OPENFILE(s1) "[" + std::string(s1) + "]" + " : open success"
+#define _ERR_OPENFILE(s1) "[" + std::string(s1) + "]" + " : fail to open "
+#define _ERR_IMPUT_FIRSTLINE(path, s1, s2) "on line 0 \"" + s1 + "\"" + " from [" + path + "] is incorrect. Expected : [" + s2 + "]"
+#define _ERR_DATA_CORRUPTED(line, pos) "wrong input at line " + (pos) + ": \"" + (line) + "\""
+
 
 
 class MyException : public std::exception {
