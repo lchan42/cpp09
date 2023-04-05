@@ -18,8 +18,6 @@
 #define _ERR_IMPUT_FIRSTLINE(path, s1, s2) "on line 0 \"" + s1 + "\"" + " from [" + path + "] is incorrect. Expected : [" + s2 + "]"
 #define _ERR_DATA_CORRUPTED(line, pos) "wrong input at line " + (pos) + ": \"" + (line) + "\""
 
-
-
 class MyException : public std::exception {
 	public:
 		MyException(const char* error)	:_errorMessage(std::string(error))	{}
