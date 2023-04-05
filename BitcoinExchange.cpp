@@ -150,9 +150,9 @@ void	BitEx::_printer(const std::string &date, const std::string &valS, const int
 	int 	precision = 2;
 
 	result = valI * valD;
-	if (result == 0) {
-		precision = 0;
-	}
+	// if (result == 0) {
+	// 	precision = 0;
+	// }
 	// std::cout << "val = " << valI  << "rate = " << valD <<std::endl;
 	std::cout	<< date
 				<< " => "
