@@ -11,8 +11,8 @@
 #define VALID_DIGIT "0123456789"
 
 
-typedef std::vector<int>::iterator	vecIterator;
-typedef std::list<int>::iterator	listIterator;
+typedef std::vector<int>::iterator	vIt;
+typedef std::list<int>::iterator	listIter;
 
 class PmergeMe {
 	private :
@@ -28,11 +28,13 @@ class PmergeMe {
 		/* algo */
 
 		// void				_vectorInsertSort(std::vector<int> &v);
-		// void				_listInsertSort(std::list<int> &l);
+		void				_listInsertSort(std::list<int> &lst);
 		template <typename STL>
 		void				_InsertSort(STL &stl);
 		template <typename STL>
 		void				_InsertSortList(STL &stl);
+		listIter	_listIterPrev(listIter it);
+
 
 
 	public:

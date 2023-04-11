@@ -43,17 +43,17 @@ void	PmergeMe::_parse(char *tab[]){
 		_addNumber(std::atoi(tab[i]));
 		i++;
 	}
-	printStl(_vector);
+	// printStl(_vector);
 	// printStl(_list);
-	_parseFlag = true;
-	_InsertSort<std::vector<int> >(_vector);
-	_InsertSort<std::list<int> >(_list);
-	std::cout << "result for vector : " << std::endl;
-	printStl(_vector);
-	std::cout << "result for list : " << std::endl;
+	// _parseFlag = true;
+	// _InsertSort<std::vector<int> >(_vector);
+	// std::cout << "result for list : " << std::endl;
+	_listInsertSort(_list);
+	// _InsertSort<std::list<int> >(_list);
+	// std::cout << "result for vector : " << std::endl;
+	// printStl(_vector);
+
 	printStl(_list);
-
-
 }
 
 void	PmergeMe::_checkNumber(const char *s) {
@@ -71,6 +71,7 @@ void	PmergeMe::_addNumber(int n) {
 	_list.push_back(n);
 	_vector.push_back(n);
 }
+
 
 /****************** insert sort ******************/
 
@@ -91,46 +92,118 @@ void	PmergeMe::_addNumber(int n) {
 // 	}
 // }
 
-// void	PmergeMe::_listInsertSort(std::list<int> &list) {
-// 	int				tmpVal;
-// 	listIterator	it2, tmp;
+listIter	PmergeMe::_listIterPrev(listIter it){
+	return (--it);
+}
 
-// 	for (listIterator it1 = list.begin(); it1 != list.end(); it1++)
+void	PmergeMe::_listInsertSort(std::list<int> &lst) {
+	int			tmpVal;
+	// listIter	it2;
+
+	for (listIter it1 = lst.begin(); it1 != lst.end(); it1++)
+	{
+		if (it1 != lst.begin() && *it1 < *(_listIterPrev(it1)))
+		{
+			// std::cout << "infinit loop" << std::endl;
+			for (listIter it2 = lst.begin(); it2 != it1; it2++){
+				tmpVal = *it1;
+				if (*it2 > *it1){
+					lst.erase(it1);
+					lst.insert(it2, tmpVal);
+					break;
+				}
+				// std::cout << "infinit loop it2 = " << *it2 << std::endl;
+			}
+		}
+		// else
+		// 	std::cout << *it1 << "seems at his place" << "prev = " << *(_listIterPrev(it1)) << std::endl;
+	}
+}
+
+// template <typename STL>
+// void	PmergeMe::_InsertSort(STL &stl)
+// {
+// 	int						tmpVal;
+// 	typename STL::iterator	it1, it2, insertPos;
+
+// 	for (it1 = stl.begin(); it1 != stl.end(); it1++)
 // 	{
+
 // 		it2 = it1;
-// 		tmp = ++it2;
-// 		tmpVal = *tmp;
-// 		do
-// 			it2--;
-// 		while (it2 != list.begin() && *(it2) > *(tmp));
-// 		if (it2 != it1)
+// 		it2++;
+// 		std::cout << "position of it1 = " << std::distance(stl.begin(), it1)  << std::endl;
+
+// 		tmpVal = *it2;
+// 		insertPos = std::upper_bound(stl.begin(), it2, tmpVal);
+// 		if (it2 == stl.end())
 // 		{
-// 			list.erase(tmp);
-// 			list.insert(it2, tmpVal);
+// 			std::cout << "BREAKING, it2 = " << *it2 << "stl.end () = " << *(stl.end()) << std::endl;
+// 			break ;
 // 		}
+// 		if (it2 != insertPos) {
+// 			std::cout << "erase = " << *it2 << "insertpos = " << *insertPos << std::endl;
+// 			stl.erase(it2);
+// 			stl.insert(insertPos, tmpVal);
+// 			it1--;
+// 		}
+// 		else
+// 			std::cout << "DO NOT NEED TO MOVE erase = " << *it2 << " insertpos = " << *insertPos << std::endl;
 // 	}
+// }
+
+
+// template <typename STL>
+// void	PmergeMee::_findInsertPos(STL &stl){
+
 // }
 
 template <typename STL>
 void	PmergeMe::_InsertSort(STL &stl)
 {
 	int						tmpVal;
-	typename STL::iterator	it1, it2, insertPos;
+	typename STL::iterator	it1, insertPos;
 
-	std::cout << "here, end = " << *(stl.end()) << std::endl;
+	std::cout << "list size = " << stl.size() << std::endl;
 	for (it1 = stl.begin(); it1 != stl.end(); it1++)
 	{
-		it2 = it1;
-		it2++;
-		if (it2 == stl.end()) break;
-		tmpVal = *it2;
-		insertPos = std::upper_bound(stl.begin(), it2, tmpVal);
-		if (it2 != insertPos) {
-			stl.erase(it2);
+		tmpVal = *it1;
+		// std::cout << "1" << std::endl;
+		insertPos = std::upper_bound(stl.begin(), it1, tmpVal);
+		// std::cout << "2" << std::endl;
+		if (insertPos != it1 && it1 != stl.end()) {
+			// std::cout << "3" << std::endl;
+			stl.erase(it1);
 			stl.insert(insertPos, tmpVal);
 		}
+		// else
+		// 	std::cout << "DO NOT NEED TO MOVE erase = " << *it1 << " insertpos = " << *insertPos << std::endl;
 	}
+	// stl.sort();
 }
+
+//
+
+// template <typename STL>
+// void	PmergeMe::_InsertSort(STL &stl)
+// {
+// 	int						tmpVal;
+// 	typename STL::iterator	it1, it2, insertPos;
+
+// 	for (it1 = stl.begin(); it1 != stl.end(); it1++)
+// 	{
+
+// 		it2 = it1;
+// 		it2++;
+// 		tmpVal = *it2;
+// 		insertPos = std::upper_bound(stl.begin(), it2, tmpVal);
+// 		if (it2 == stl.end()) break ;
+// 		if (it2 != insertPos) {
+// 			stl.erase(it2);
+// 			stl.insert(insertPos, tmpVal);
+// 			it1--;
+// 		}
+// 	}
+// }
 
 // template <typename STL>
 // void	PmergeMe::_InsertSortList(STL &stl){
