@@ -1,17 +1,20 @@
 #include "PmergeMe.hpp"
 
-PmergeMe::PmergeMe() { std::cout << "constructor called" << std::endl; }
+PmergeMe::PmergeMe() : _parseFlag(0) { std::cout << "constructor called" << std::endl; }
 
-PmergeMe::PmergeMe(PmergeMe &rhs) : _parseFlag(rhs._parseFlag), _list(rhs._list), _vector(rhs._vector) { std::cout << "constructor called" << std::endl; }
+PmergeMe::PmergeMe(PmergeMe &rhs) : _parseFlag(rhs._parseFlag), _initialList(rhs._initialList), _list(rhs._list), _vector(rhs._vector), _lTime(rhs._lTime), _vTime(rhs._vTime) { std::cout << "constructor called" << std::endl; }
 
 PmergeMe::~PmergeMe() { std::cout << "destructor called" << std::endl; }
 
 PmergeMe& PmergeMe::operator= (PmergeMe &rhs)
 {
 	std::cout << "operator = called" << std::endl;
-	_parseFlag = rhs._parseFlag;
-	_list		= rhs._list;
-	_vector		= rhs._vector;
+	_parseFlag		= rhs._parseFlag;
+	_initialList	= rhs._initialList;
+	_list			= rhs._list;
+	_vector			= rhs._vector;
+	_lTime			= rhs._lTime;
+	_vTime			= rhs._vTime;
 
 	return *this;
 }
@@ -20,10 +23,41 @@ void	PmergeMe::compute(char *tab[])
 {
 	try {
 		_parse(tab);
+		_parseFlag = true;
 	}
 	catch (std::exception &e) {
 		std::cout << "error : " << e.what() << std::endl;
 	}
+	if (_parseFlag) {
+		_getTime(_lTime);
+		_listMergeSort(_list);
+		_timeDiff(_lTime);
+		_getTime(_vTime);
+		_vectorMergeSort(_vector);
+		_timeDiff(_vTime);
+		_printResult();
+	}
+}
+
+void	PmergeMe::_printResult() {
+	timeval	test;
+
+	std::cout << "before : "; printStl(_initialList);
+	std::cout << "after : "; printStl (_vector);
+	std::cout << "Time to process a range of " << _initialList.size() << " elements with std::list : " << _lTime.tv_sec * 1000000 + _lTime.tv_usec << " us" <<  std::endl;
+	std::cout << "Time to process a range of " << _initialList.size() << " elements with std::vector : " << _vTime.tv_sec * 1000000 + _vTime.tv_usec << " us" << std::endl;
+
+	// _getTime(test);
+	// std::sort(_initialList.begin(), _initialList.end());
+	// _timeDiff(test);
+	// std::cout << "Time to process a vector of " << _initialList.size() << " elements with std::sort : " << test.tv_sec * 1000000 + test.tv_usec << " us" <<  std::endl;
+
+	// _getTime(test);
+	// _initialList2.sort();
+	// _timeDiff(test);
+	// std::cout << "Time to process a list of " << _initialList.size() << " elements with std::sort : " << test.tv_sec * 1000000 + test.tv_usec << " us" <<  std::endl;
+
+	// _checkResult();
 }
 
 
@@ -39,26 +73,8 @@ void	PmergeMe::_parse(char *tab[])
 		_addNumber(std::atoi(tab[i]));
 		i++;
 	}
-
-	_listMergeSort(_list);
-	_vectorMergeSort(_vector);
-	// printStl(_vector);
-	// printStl(_list);
-	// _parseFlag = true;
-	// _InsertSort<std::vector<int> >(_vector);
-	// std::cout << "result for list : " << std::endl;
-
-
-	// _InsertSort<std::list<int> >(_list);
-	// std::cout << "result for vector : " << std::endl;
-	// printStl(_vector);
-
-
-	//_listInsertSort(_list);
-	//printStl(_list);
-	// std::cout << "final result for vector : " << std::endl;
-	// printStl(_vector);
-	_checkResult();
+	_initialList = _vector;
+	// _initialList2 = _list;
 }
 
 void	PmergeMe::_checkNumber(const char *s)
@@ -77,13 +93,25 @@ void	PmergeMe::_addNumber(int n)
 	_vector.push_back(n);
 }
 
+void	PmergeMe::_getTime(timeval &startTime){
+	gettimeofday(&startTime, NULL);
+}
+
+void	PmergeMe::_timeDiff(timeval &startTime){
+	timeval endTime;
+	gettimeofday(&endTime, NULL);
+
+	startTime.tv_sec = endTime.tv_sec - startTime.tv_sec;
+	startTime.tv_usec = endTime.tv_usec - startTime.tv_usec;
+}
+
 /****************** vector sort ******************/
 
 void	PmergeMe::_vectorMergeSort (std::vector<int> &v1)
 {
 	std::vector<int>	v2;
 
-	if (v1.size() > MERGE_LIM_HIGH) {
+	if (v1.size() > VEC_MERGE_LIM_HIGH) {
 		_splitVector(v1, v2);
 		_vectorMergeSort(v1);
 		_vectorMergeSort(v2);
@@ -152,7 +180,7 @@ void	PmergeMe::_listMergeSort (std::list<int> &list1)
 {
 	std::list<int>	list2;
 
-	if (list1.size() > MERGE_LIM_HIGH) {
+	if (list1.size() > LIST_MERGE_LIM_HIGH) {
 		_splitList(list1, list2);
 		_listMergeSort(list1);
 		_listMergeSort(list2);

@@ -8,9 +8,12 @@
 #include <cstdlib>
 #include <algorithm>
 #include <iterator>
+#include <sys/time.h>
+#include <ctime>
 
 #define VALID_DIGIT "0123456789"
-#define MERGE_LIM_HIGH 5
+#define LIST_MERGE_LIM_HIGH 30
+#define VEC_MERGE_LIM_HIGH 3000
 
 
 typedef std::vector<int>::iterator	vIt;
@@ -20,8 +23,13 @@ class PmergeMe {
 	private :
 		/* variables */
 		bool				_parseFlag;
+		std::vector<int>	_initialList;
+		std::list<int>		_initialList2;
 		std::list<int>		_list;
 		std::vector<int>	_vector;
+		timeval				_lTime;
+		timeval				_vTime;
+
 
 		/* parsing */
 		void		_parse( char *tab[]);
@@ -42,6 +50,9 @@ class PmergeMe {
 
 		/* tools */
 		listIter	_listIterPrev(listIter it);
+		void	_getTime(timeval &startTime);
+		void	_timeDiff(timeval &startTime);
+		void	_printResult();
 
 		/* checker*/
 		void		_checkResult();
@@ -75,6 +86,23 @@ void	printStl(T stl){
 	}
 	std::cout << std::endl;
 }
+
+// template<typename T>
+// std::string	getListInStr(T stl){
+// 	std::string	ret;
+// 	try {
+// 		typename T::iterator	begin = stl.begin(), end = stl.end();;
+
+// 		for (; begin != end; begin++)
+// 			ret += std::string(*begin) + " ";
+// 			//std::cout << *begin << " ";
+// 	}
+// 	catch (std::exception &e) {
+// 		std::cout << "print error" << std::endl;
+// 	}
+// 	return (ret);
+// 	// std::cout << std::endl;
+// }
 
 
 #endif
