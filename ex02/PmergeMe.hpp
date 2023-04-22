@@ -13,7 +13,7 @@
 
 #define VALID_DIGIT "0123456789"
 #define LIST_MERGE_LIM_HIGH 30
-#define VEC_MERGE_LIM_HIGH 1
+#define VEC_MERGE_LIM_HIGH 5
 
 
 
@@ -48,7 +48,7 @@ class PmergeMe {
 		void	_vectorMergeInsertSort (vIt const & start, vIt const & end);
 		void	_splitVector(std::vector<vIt> & cuts, long long int const size);
 		void	_vectorInsertSort(vIt const &start, vIt const &end);
-		void	_vectorMerge(vIt const & start, vIt const & mid, vIt const & end);
+		void	_vectorMerge(vIt const & start, vIt const mid, vIt const & end);
 
 		/* tools */
 		listIter	_listIterPrev(listIter it);

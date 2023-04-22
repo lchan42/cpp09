@@ -31,11 +31,11 @@ void	PmergeMe::compute(char *tab[])
 	if (_parseFlag) {
 
 		// std::cout << "before : "; printStl(_vector); std::cout << std::endl;
-		_getTime(_lTime);
-		_listMergeSort(_list);
-		_timeDiff(_lTime);
+		// _getTime(_lTime);
+		// _listMergeSort(_list);
+		// _timeDiff(_lTime);
 		_getTime(_vTime);
-		_vectorMergeInsertSort(_vector.begin(), _vector.end());
+		_vectorMergeInsertSort(_vector.begin(), _vector.end() - 1);
 		// _vectorMergeSort(_vector);
 		_timeDiff(_vTime);
 		_printResult();
@@ -46,9 +46,10 @@ void	PmergeMe::_printResult() {
 	timeval	test;
 
 	std::cout << "before : "; printStl(_initialList);
-	std::cout << "after : "; printStl (_vector);
-	std::cout << "Time to process a range of " << _list.size() << " elements with std::list : " << _lTime.tv_sec * 1000000 + _lTime.tv_usec << " us" <<  std::endl;
-	std::cout << "Time to process a range of " << _vector.size() << " elements with std::vector : " << _vTime.tv_sec * 1000000 + _vTime.tv_usec << " us" << std::endl;
+	// std::cout << "after list : "; printStl (_list);
+	std::cout << "after vector: "; printStl (_vector);
+	// std::cout << "Time to process a range of " << _list.size() << " elements with std::list : " << _lTime.tv_sec * 1000000 + _lTime.tv_usec << " us" <<  std::endl;
+	 std::cout << "Time to process a range of " << _vector.size() << " elements with std::vector : " << _vTime.tv_sec * 1000000 + _vTime.tv_usec << " us" << std::endl;
 
 	/** to check the  */
 	// _getTime(test);
@@ -191,34 +192,55 @@ void	PmergeMe::_timeDiff(timeval &startTime){
 // 	else
 // 		_vectorInsertSort(_vector.begin(), _vector.end());
 // }
+void	printItRange(vIt const  start, vIt const  end){
+	vIt it = start;
+	std::cout << "itRange = ";
+	while (it <= end) {
+		std::cout << *it << " ";
+		it ++;
+	}
+	std::cout << std::endl;
+}
 
 void	PmergeMe::_vectorMergeInsertSort (vIt const & start, vIt const & end) {
 	if (distance(start, end) > VEC_MERGE_LIM_HIGH){
-		vIt	mid = start + distance(start, end) / 2;
+		vIt	mid = start + (distance(start, end) )/ 2;
 		_vectorMergeInsertSort(start, mid);
-		_vectorMergeInsertSort(mid, end);
+		_vectorMergeInsertSort(mid + 1, end);
 		_vectorMerge(start, mid, end);
 	}
 	else {
+		printItRange(start, end);
 		_vectorInsertSort(start, end);
 	}
 }
 
-void	PmergeMe::_vectorMerge(vIt const &start, vIt const &mid, vIt const &end){
+
+
+void	PmergeMe::_vectorMerge(vIt const &start, vIt const mid, vIt const &end){
 	int	tmpVal;
-	vIt	insertPos = start, candidate = mid;
-	for (int i = 0; i < distance(start, end); ++i){
+	vIt	insertPos = start, candidate = mid + 1;
+	printItRange(start, mid);
+	printItRange(candidate, end);
+	printItRange(start, end);
+
+
+	// for (int i = 0; i < distance(start, end) ; ++i){
+	for (; candidate <= end; ) {
 		if (*insertPos > *candidate){
-			std::cout << "distance = " << distance(start, end) << std::endl;
+			// std::cout << "distance = " << distance(start, end) << std::endl;
 			tmpVal = *candidate;
 			_vector.erase(candidate);
 			_vector.insert(insertPos, tmpVal);
 			++candidate;
+			++insertPos;
 		}
 		else
 			++insertPos;
+		printItRange(start, end);
 	}
 }
+
 
 // void	PmergeMe::_splitVector(std::vector<vIt> & cuts, long long int const vSize)
 // {
@@ -234,15 +256,19 @@ void	PmergeMe::_vectorInsertSort(vIt const &start, vIt const &end)
 	int	tmpVal;
 	vIt	it1, insertPos;
 
-	for (it1 = start; it1 != end; it1++)
+	std::cout << "insert Sort " ; printItRange(start, end);
+	for (it1 = start; it1 <= end; ++it1)
 	{
 		tmpVal = *it1;
 		insertPos = std::upper_bound(start, it1, tmpVal);
-		if (insertPos != it1 && it1 != end) {
+
+		if (insertPos != it1) {
 			_vector.erase(it1);
 			_vector.insert(insertPos, tmpVal);
 		}
 	}
+	std::cout << "insert sort result"; printItRange(start, end);
+
 }
 
 /****************** list sort ******************/
@@ -317,17 +343,18 @@ void	PmergeMe::_checkResult()
 		// std::advance(l1, _list.size() / 2); *l1 -= 10000;
 	 /*****************************************************/
 
-	for (l1 = _list.begin(), l2++; l2 != _list.end(); l2++){
-		if (*l1 > *l2) {
-			std::cout << "error in list, ite1 = " << *l1 << " > ite2 = " << *l2 << std::endl;
-			flag = false;
-		}
-	}
+	// for (l1 = _list.begin(), l2++; l2 != _list.end(); l2++){
+	// 	if (*l1 > *l2) {
+	// 		std::cout << "error in list, ite1 = " << *l1 << " > ite2 = " << *l2 << std::endl;
+	// 		flag = false;
+	// 	}
+	// }
 	for (long unsigned int i = 1; i < _vector.size(); i++){
 		j = i - 1;
 		if (_vector[i] < _vector[j]) {
 			std::cout << "error in vector, v[" << j << "] = " << _vector[j] << " > v[" << i << "] = " << _vector[i] << std::endl;
 			flag = false;
+			// std::cout << "segmentation fault here ???" << std::endl;
 		}
 	}
 	if (flag == true) {
