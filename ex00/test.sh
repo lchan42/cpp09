@@ -10,7 +10,6 @@ elif [ "$1" = "2" ]; then
 elif [ "$1" = "3" ]; then
 	echo "~~~~~~~~~ testing with wrongFistLine.txt ~~~~~~~~~"
 	./cpp09ex00 inputFiles/wrongFistLine.txt
-
 elif [ "$1" = "4" ]; then
 	echo "~~~~~~~~~ testing with wrongSeparator.txt ~~~~~~~~~"
 	./cpp09ex00 inputFiles/wrongSeparator.txt

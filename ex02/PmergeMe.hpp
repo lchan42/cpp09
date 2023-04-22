@@ -13,7 +13,8 @@
 
 #define VALID_DIGIT "0123456789"
 #define LIST_MERGE_LIM_HIGH 30
-#define VEC_MERGE_LIM_HIGH 3000
+#define VEC_MERGE_LIM_HIGH 100
+
 
 
 typedef std::vector<int>::iterator	vIt;
@@ -43,10 +44,21 @@ class PmergeMe {
 		void		_mergeList(std::list<int> &list1 , std::list<int> &list2);
 
 		/* std::vector sort */
-		void		_vectorInsertSort(std::vector<int> &v);
-		void		_vectorMergeSort(std::vector<int> &v);
-		void		_splitVector(std::vector<int> &v1, std::vector<int> &v2);
-		void		_mergeVector(std::vector<int> &v1, std::vector<int> &v2);
+		/* algo 3 single vector */
+		void	_vectorMergeInsertSort ();
+		void	_splitVector(std::vector<vIt> & cuts, long long int const size);
+		void	_vectorInsertSort(vIt const &start, vIt const &end);
+		void	_vectorMerge(std::vector<vIt> & cuts);
+
+		/* algo 2 better split and merge vector */
+		// void		_vectorInsertSort(std::vector<int> &v);
+		// void		_vectorMergeSort(std::vector<int> &v);
+		// void		_splitVector(std::vector<int> &v1, std::vector<int> &v2, std::vector<int> &v3);
+		// void		_mergeVector(std::vector<int> &v1, std::vector<int> &v2, std::vector<int> &v3);
+
+		/** algo 1 time for 3000 : */
+		// void		_splitVector(std::vector<int> &v1, std::vector<int> &v2);
+		// void		_mergeVector(std::vector<int> &v1, std::vector<int> &v2);
 
 		/* tools */
 		listIter	_listIterPrev(listIter it);
@@ -77,9 +89,11 @@ template<typename T>
 void	printStl(T stl){
 	try {
 		typename T::iterator	begin = stl.begin(), end = stl.end();;
-
-		for (; begin != end; begin++)
-			std::cout << *begin << " ";
+		if (!stl.size())
+			std::cout << "empty stl";
+		else
+			for (; begin != end; begin++)
+				std::cout << *begin << " ";
 	}
 	catch (std::exception &e) {
 		std::cout << "print error" << std::endl;
