@@ -13,7 +13,7 @@
 
 #define VALID_DIGIT "0123456789"
 #define LIST_MERGE_LIM_HIGH 30
-#define VEC_MERGE_LIM_HIGH 100
+#define VEC_MERGE_LIM_HIGH 1
 
 
 
@@ -45,20 +45,10 @@ class PmergeMe {
 
 		/* std::vector sort */
 		/* algo 3 single vector */
-		void	_vectorMergeInsertSort ();
+		void	_vectorMergeInsertSort (vIt const & start, vIt const & end);
 		void	_splitVector(std::vector<vIt> & cuts, long long int const size);
 		void	_vectorInsertSort(vIt const &start, vIt const &end);
-		void	_vectorMerge(std::vector<vIt> & cuts);
-
-		/* algo 2 better split and merge vector */
-		// void		_vectorInsertSort(std::vector<int> &v);
-		// void		_vectorMergeSort(std::vector<int> &v);
-		// void		_splitVector(std::vector<int> &v1, std::vector<int> &v2, std::vector<int> &v3);
-		// void		_mergeVector(std::vector<int> &v1, std::vector<int> &v2, std::vector<int> &v3);
-
-		/** algo 1 time for 3000 : */
-		// void		_splitVector(std::vector<int> &v1, std::vector<int> &v2);
-		// void		_mergeVector(std::vector<int> &v1, std::vector<int> &v2);
+		void	_vectorMerge(vIt const & start, vIt const & mid, vIt const & end);
 
 		/* tools */
 		listIter	_listIterPrev(listIter it);
@@ -78,13 +68,7 @@ class PmergeMe {
 		void		compute(char *tab[]);
 };
 
-
-// cmd : make re && ./PmergeMe `shuf -i 1-100000 -n 5000 | tr "\n" " "`
-
 //debug functions
-// typedef std::list<int>::iterator itL;
-// typedef std::vector<int>::iterator itV;
-
 template<typename T>
 void	printStl(T stl){
 	try {
@@ -101,22 +85,15 @@ void	printStl(T stl){
 	std::cout << std::endl;
 }
 
-// template<typename T>
-// std::string	getListInStr(T stl){
-// 	std::string	ret;
-// 	try {
-// 		typename T::iterator	begin = stl.begin(), end = stl.end();;
-
-// 		for (; begin != end; begin++)
-// 			ret += std::string(*begin) + " ";
-// 			//std::cout << *begin << " ";
-// 	}
-// 	catch (std::exception &e) {
-// 		std::cout << "print error" << std::endl;
-// 	}
-// 	return (ret);
-// 	// std::cout << std::endl;
-// }
-
-
 #endif
+
+
+		/* algo 2 better split and merge vector */
+		// void		_vectorInsertSort(std::vector<int> &v);
+		// void		_vectorMergeSort(std::vector<int> &v);
+		// void		_splitVector(std::vector<int> &v1, std::vector<int> &v2, std::vector<int> &v3);
+		// void		_mergeVector(std::vector<int> &v1, std::vector<int> &v2, std::vector<int> &v3);
+
+		/** algo 1 time for 3000 : */
+		// void		_splitVector(std::vector<int> &v1, std::vector<int> &v2);
+		// void		_mergeVector(std::vector<int> &v1, std::vector<int> &v2);

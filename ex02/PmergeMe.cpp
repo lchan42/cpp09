@@ -35,7 +35,8 @@ void	PmergeMe::compute(char *tab[])
 		_listMergeSort(_list);
 		_timeDiff(_lTime);
 		_getTime(_vTime);
-		_vectorMergeSort(_vector);
+		_vectorMergeInsertSort(_vector.begin(), _vector.end());
+		// _vectorMergeSort(_vector);
 		_timeDiff(_vTime);
 		_printResult();
 	}
@@ -44,8 +45,8 @@ void	PmergeMe::compute(char *tab[])
 void	PmergeMe::_printResult() {
 	timeval	test;
 
-	// std::cout << "before : "; printStl(_initialList);
-	// std::cout << "after : "; printStl (_vector);
+	std::cout << "before : "; printStl(_initialList);
+	std::cout << "after : "; printStl (_vector);
 	std::cout << "Time to process a range of " << _list.size() << " elements with std::list : " << _lTime.tv_sec * 1000000 + _lTime.tv_usec << " us" <<  std::endl;
 	std::cout << "Time to process a range of " << _vector.size() << " elements with std::vector : " << _vTime.tv_sec * 1000000 + _vTime.tv_usec << " us" << std::endl;
 
@@ -62,7 +63,6 @@ void	PmergeMe::_printResult() {
 
 	_checkResult();
 }
-
 
 /****************** parsing ******************/
 void	PmergeMe::_parse(char *tab[])
@@ -174,42 +174,60 @@ void	PmergeMe::_timeDiff(timeval &startTime){
 // 	}
 // }
 
+// void	PmergeMe::_vectorMergeInsertSort ()
+// {
 
+// 	// std::vector<vIt>::iterator	start, end;
 
+// 	if (_vector.size() > VEC_MERGE_LIM_HIGH){
+// 		std::vector<vIt>	cuts;
 
+// 		_splitVector(cuts, _vector.size());
+// 		for (long long int i = 0, j = i + 1; j <= cuts.size(); ++i, ++j){
+// 			_vectorInsertSort(cuts[i], cuts[j]);
+// 		}
+// 		_vectorMerge(cuts);
+// 	}
+// 	else
+// 		_vectorInsertSort(_vector.begin(), _vector.end());
+// }
 
-
-void	PmergeMe::_vectorMergeInsertSort ()
-{
-
-	// std::vector<vIt>::iterator	start, end;
-
-	if (_vector.size() > VEC_MERGE_LIM_HIGH){
-		std::vector<vIt>	cuts;
-
-		_splitVector(cuts, _vector.size());
-		for (long long int i = 0, j = i + 1; j <= cuts.size(); ++i, ++j){
-			_vectorInsertSort(cuts[i], cuts[j]);
-		}
-		_vectorMerge(cuts);
+void	PmergeMe::_vectorMergeInsertSort (vIt const & start, vIt const & end) {
+	if (distance(start, end) > VEC_MERGE_LIM_HIGH){
+		vIt	mid = start + distance(start, end) / 2;
+		_vectorMergeInsertSort(start, mid);
+		_vectorMergeInsertSort(mid, end);
+		_vectorMerge(start, mid, end);
 	}
-	else
-		_vectorInsertSort(_vector.begin(), _vector.end());
+	else {
+		_vectorInsertSort(start, end);
+	}
 }
 
-void	PmergeMe::_vectorMerge(std::vector<vIt> & cuts){
-
-	vIt const &vStart1, vIt const &vEnd1, vIt const &vStart2, vIt const &vEnd2
+void	PmergeMe::_vectorMerge(vIt const &start, vIt const &mid, vIt const &end){
+	int	tmpVal;
+	vIt	insertPos = start, candidate = mid;
+	for (int i = 0; i < distance(start, end); ++i){
+		if (*insertPos > *candidate){
+			std::cout << "distance = " << distance(start, end) << std::endl;
+			tmpVal = *candidate;
+			_vector.erase(candidate);
+			_vector.insert(insertPos, tmpVal);
+			++candidate;
+		}
+		else
+			++insertPos;
+	}
 }
 
-void	PmergeMe::_splitVector(std::vector<vIt> & cuts, long long int const size)
-{
-	for (long long int	i = 0; i <= size / VEC_MERGE_LIM_HIGH; ++i)
-		cuts[i] = _vector.begin() + VEC_MERGE_LIM_HIGH * i;
-	if (size % VEC_MERGE_LIM_HIGH)
-		cuts.push_back(_vector.end());
-	cuts.insert(cuts.begin(), _vector.begin());
-}
+// void	PmergeMe::_splitVector(std::vector<vIt> & cuts, long long int const vSize)
+// {
+// 	for (long long int	i = 0; i < vSize / VEC_MERGE_LIM_HIGH; ++i)
+// 		cuts[i] = _vector.begin() + VEC_MERGE_LIM_HIGH * i;
+// 	if (vSize % VEC_MERGE_LIM_HIGH)
+// 		cuts.push_back(_vector.end());
+// 	cuts.insert(cuts.begin(), _vector.begin());
+// }
 
 void	PmergeMe::_vectorInsertSort(vIt const &start, vIt const &end)
 {
@@ -225,10 +243,6 @@ void	PmergeMe::_vectorInsertSort(vIt const &start, vIt const &end)
 			_vector.insert(insertPos, tmpVal);
 		}
 	}
-}
-
-void	PmergeMe::_vectorMerge(std::vector<vIt> &cuts) {
-
 }
 
 /****************** list sort ******************/
