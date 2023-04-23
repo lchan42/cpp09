@@ -219,11 +219,11 @@ void BitEx::_computeDataCsv() {
 
 void	BitEx::_buildMap(std::ifstream &ifs, const std::string sep){
 	std::string		line;
-	unsigned int	n = 0;
+	unsigned int	lineNumber = 0;
 
-	while (std::getline(ifs, line).good() && ++n){
+	while (std::getline(ifs, line).good() && ++lineNumber){
 		if (_AddInMapIfValid(line, sep) == false){
-			throw MyException(_ERR_DATA_CORRUPTED(line, _ltoa(n)));
+			throw MyException(_ERR_DATA_CORRUPTED(line, _ltoa(lineNumber)));
 		}
 	}
 }
