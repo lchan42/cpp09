@@ -5,7 +5,7 @@ PmergeMe::PmergeMe() : _parseFlag(0) { std::cout << "constructor called" << std:
 PmergeMe::PmergeMe(PmergeMe &rhs)
 	:	_parseFlag(rhs._parseFlag), _initialList(rhs._initialList), _initialVector(rhs._initialVector),
 		_list(rhs._list), _vector(rhs._vector),
-		_lTime(rhs._lTime), _vTime(rhs._vTime)
+		_lTime(rhs._lTime), _vTime(rhs._vTime), _parsingTime(rhs._parsingTime)
 		{ std::cout << "constructor called" << std::endl; }
 
 PmergeMe::~PmergeMe() { std::cout << "destructor called" << std::endl; }
@@ -20,12 +20,12 @@ PmergeMe& PmergeMe::operator= (PmergeMe &rhs)
 	_vector			= rhs._vector;
 	_lTime			= rhs._lTime;
 	_vTime			= rhs._vTime;
-
 	return *this;
 }
 
 void	PmergeMe::compute(char *tab[])
 {
+	_getTime(_parsingTime);
 	try {
 		_parse(tab);
 		_parseFlag = true;
@@ -33,75 +33,36 @@ void	PmergeMe::compute(char *tab[])
 	catch (std::exception &e) {
 		std::cout << "error : " << e.what() << std::endl;
 	}
+	_timeDiff(_parsingTime);
 	if (_parseFlag) {
 		_getTime(_lTime);
 		_listMergeSort(_list);
 		_timeDiff(_lTime);
 		_getTime(_vTime);
-		// _vectorMergeInsertSort2(_vector);
-		_vectorMergeInsertSort(_vector.begin(), _vector.end() - 1);
-		// std::sort(_vector.begin(), _vector.end());
+		_vectorMergeInsertSort(_vector, _vector.begin(), _vector.end() - 1);
 		_timeDiff(_vTime);
 		_printResult();
 	}
-
 }
 
 void	PmergeMe::_printResult()
 {
-	timeval				compTime;
-	std::list<int>		initialL;
-	std::vector<int>	initialV;
-
-	// std::cout << "before : "; printStl(_initialList);
-	// std::cout << "after list : "; printStl (_list);
+	std::cout << "before:		"; printStl(_initialList);
+	std::cout << "after list:	"; printStl (_list);
 	// std::cout << "after vector: "; printStl (_vector);
-	std::cout	<< "Time to process a range of " << _list.size()
-				<< " elements with std::list : " << _lTime.tv_sec * 1000000 + _lTime.tv_usec
+	std::cout	<< "Time to process a range of	"
+				<< _list.size()
+				<< " elements with std::list:	"
+				<< _lTime.tv_sec * 1000000 + _lTime.tv_usec + _parsingTime.tv_sec * 1000000 + _parsingTime.tv_sec
 				<< " us" <<  std::endl;
 
-	std::cout	<< "Time to process a range of " << _vector.size()
-				<< " elements with std::vector : " << _vTime.tv_sec * 1000000 + _vTime.tv_usec
+	std::cout	<< "Time to process a range of	"
+				<< _vector.size()
+				<< " elements with std::vector:	"
+				<< _vTime.tv_sec * 1000000 + _vTime.tv_usec + _parsingTime.tv_sec * 1000000 + _parsingTime.tv_sec
 				<< " us" << std::endl;
-
-	/** to compare with sort methode but outside of the class */
-	std::cout << std::endl; std::cout << std::endl;
-	std::cout << "this part is not part of the subject. It shows the sort time of the same list but the list is not stored in the class" << std::endl;
-
-	// std::cout << std::endl;
-	// initialL = _initialList;
-	// _getTime(compTime);
-	// initialL.sort();
-	// _timeDiff(compTime);
-	// std::cout << "Sort list " << initialL.size() << " with std::sort : " << compTime.tv_sec * 1000000 + compTime.tv_usec << " us" <<  std::endl;
-
-	// initialL = _initialList;
-	// _getTime(compTime);
-	// _listMergeSort(initialL);
-	// _timeDiff(compTime);
-	// std::cout << "Sort list " << initialL.size() << " with MyListSort : " << compTime.tv_sec * 1000000 + compTime.tv_usec << " us" <<  std::endl;
-
-	std::cout << std::endl;
-	initialV = _initialVector;
-	_getTime(compTime);
-	std::sort(initialV.begin(), initialV.end());
-	_timeDiff(compTime);
-	std::cout << "Sort vector " << initialV.size() << " with std::sort : " << compTime.tv_sec * 1000000 + compTime.tv_usec << " us" <<  std::endl;
-
-	initialV = _initialVector;
-	_getTime(compTime);
-	_vectorMergeInsertSort(initialV.begin(), initialV.end() - 1);
-	_timeDiff(compTime);
-	std::cout << "Sort vector " << initialV.size() << " with MyVectorSort : " << compTime.tv_sec * 1000000 + compTime.tv_usec << " us" <<  std::endl;
-
-	// initialV = _initialVector;
-	// _getTime(compTime);
-	// _vectorMergeInsertSort2(initialV);
-	// _timeDiff(compTime);
-	// std::cout << "Sort vector " << initialV.size() << " with MyVectorSort2 : " << compTime.tv_sec * 1000000 + compTime.tv_usec << " us" <<  std::endl;
-
-	/* check if sort is correct */
-	// _checkResult();
+	_checkResult();
+	_printComp();
 }
 
 /****************** parsing ******************/
@@ -148,39 +109,31 @@ void	PmergeMe::_timeDiff(timeval &startTime){
 	startTime.tv_usec = endTime.tv_usec - startTime.tv_usec;
 }
 
-/****************** vector sort ******************/
+/***********************************************/
+/***************** vector sort *****************/
+/***********************************************/
 
-void	printItRange(vIt const  start, vIt const  end){
-	vIt it = start;
-
-	while (it <= end) {
-		std::cout << *it << " ";
-		it ++;
-	}
-	std::cout << std::endl;
-}
-
-void	PmergeMe::_vectorMergeInsertSort (vIt const & start, vIt const & end) {
-	if (distance(start, end) > VEC_MERGE_LIM_HIGH){
+void	PmergeMe::_vectorMergeInsertSort (vecInt & v, vIt const & start, vIt const & end) {
+	if (std::distance(start, end) > VEC_MERGE_LIM_HIGH){
 		vIt	mid = start + (distance(start, end) )/ 2;
-		_vectorMergeInsertSort(start, mid);
-		_vectorMergeInsertSort(mid + 1, end);
-		_vectorMerge(start, mid, end);
+		_vectorMergeInsertSort(v, start, mid);
+		_vectorMergeInsertSort(v, mid + 1, end);
+		_vectorMerge(v, start, mid, end);
 	}
 	else {
-		_vectorInsertSort(start, end);
+		_vectorInsertSort(v, start, end);
 	}
 }
 
-void	PmergeMe::_vectorMerge(vIt const &start, vIt const & mid, vIt const &end){
+void	PmergeMe::_vectorMerge(vecInt & v, vIt const &start, vIt const & mid, vIt const &end){
 	int	tmpVal;
 	vIt	insertPos = start, candidate = mid + 1;
 
 	while (candidate <= end && candidate !=insertPos) {
 		if (*insertPos > *candidate){
 			tmpVal = *candidate;
-			_vector.erase(candidate++);
-			_vector.insert(insertPos++, tmpVal);
+			v.erase(candidate++);
+			v.insert(insertPos++, tmpVal);
 		}
 		else
 			++insertPos;
@@ -188,7 +141,6 @@ void	PmergeMe::_vectorMerge(vIt const &start, vIt const & mid, vIt const &end){
 
 	// int	tmpVal;
 	// vIt	insertPos;
-
 	// for (vIt it1 = mid + 1; it1 <= end; ++it1)
 	// {
 	// 	tmpVal = *it1;
@@ -200,7 +152,7 @@ void	PmergeMe::_vectorMerge(vIt const &start, vIt const & mid, vIt const &end){
 	// }
 }
 
-void	PmergeMe::_vectorInsertSort(vIt const &start, vIt const &end)
+void	PmergeMe::_vectorInsertSort(vecInt & v, vIt const &start, vIt const &end)
 {
 	int	tmpVal;
 	vIt	it1, insertPos;
@@ -210,13 +162,15 @@ void	PmergeMe::_vectorInsertSort(vIt const &start, vIt const &end)
 		tmpVal = *it1;
 		insertPos = std::upper_bound(start, it1, tmpVal);
 		if (insertPos != it1) {
-			_vector.erase(it1);
-			_vector.insert(insertPos, tmpVal);
+			v.erase(it1);
+			v.insert(insertPos, tmpVal);
 		}
 	}
 }
 
+/***********************************************/
 /****************** list sort ******************/
+/***********************************************/
 
 void	PmergeMe::_listInsertSort(std::list<int> &lst)
 {
@@ -272,8 +226,10 @@ void	PmergeMe::_mergeList(std::list<int> &list1, std::list<int> &list2)
 		list1.splice(it1, list2, it2);
 	}
 }
+/***********************************************/
+/******************** tool *********************/
+/***********************************************/
 
-/****************** tool ******************/
 listIter	PmergeMe::_listIterPrev(listIter it) {return (--it);}
 
 /******************* checker *******************/
@@ -306,8 +262,53 @@ void	PmergeMe::_checkResult()
 	}
 }
 
+void	PmergeMe::_printComp(){
+	timeval				compTime;
+	std::list<int>		initialL;
+	std::vector<int>	initialV;
 
+	/** to compare with sort methode but outside of the class */
+	std::cout << std::endl; std::cout << std::endl;
+	std::cout << "-------------------------------------------------------------------------------------------" << std::endl;
+	std::cout << "this part is not asked by the subject. It shows the sort time of both container sort method" << std::endl;
+	std::cout << "-------------------------------------------------------------------------------------------" << std::endl;
+
+	initialL = _initialList;
+	_getTime(compTime);
+	initialL.sort();
+	_timeDiff(compTime);
+	std::cout << "Sort list " << initialL.size() << " with list::sort :	" << compTime.tv_sec * 1000000 + compTime.tv_usec + _parsingTime.tv_sec * 1000000 + _parsingTime.tv_sec << " us" <<  std::endl;
+
+	initialL = _initialList;
+	_getTime(compTime);
+	_listMergeSort(initialL);
+	_timeDiff(compTime);
+	std::cout << "Sort list " << initialL.size() << " with MyListSort :	" << compTime.tv_sec * 1000000 + compTime.tv_usec + _parsingTime.tv_sec * 1000000 + _parsingTime.tv_sec << " us" <<  std::endl;
+
+	std::cout << std::endl;
+	initialV = _initialVector;
+	_getTime(compTime);
+	std::sort(initialV.begin(), initialV.end());
+	_timeDiff(compTime);
+	std::cout << "Sort vector " << initialV.size() << " with vector::sort :	" << compTime.tv_sec * 1000000 + compTime.tv_usec + _parsingTime.tv_sec * 1000000 + _parsingTime.tv_sec << " us" <<  std::endl;
+
+	initialV = _initialVector;
+	_getTime(compTime);
+	_vectorMergeInsertSort(initialV, initialV.begin(), initialV.end() - 1);
+	_timeDiff(compTime);
+	std::cout << "Sort vector " << initialV.size() << " with MyVectorSort :	" << compTime.tv_sec * 1000000 + compTime.tv_usec + _parsingTime.tv_sec * 1000000 + _parsingTime.tv_sec << " us" <<  std::endl;
+
+	// initialV = _initialVector;
+	// _getTime(compTime);
+	// _vectorMergeInsertSort2(initialV);
+	// _timeDiff(compTime);
+	// std::cout << "Sort vector " << initialV.size() << " with MyVectorSort2 :	" << compTime.tv_sec * 1000000 + compTime.tv_usec + _parsingTime.tv_sec * 1000000 + _parsingTime.tv_sec << " us" <<  std::endl;
+}
+
+
+/***********************************************************************/
 /******************* version1 of vector MergeInsert ********************/
+/***********************************************************************/
 
 // void	PmergeMe::_vectorMergeSort (std::vector<int> &v1)
 // {
@@ -341,68 +342,70 @@ void	PmergeMe::_checkResult()
 // 	}
 // }
 
+/***********************************************************************/
 /******************* version2 of vector MergeInsert ********************/
+/***********************************************************************/
 
-void	PmergeMe::_vectorMergeInsertSort2 (std::vector<int> &v1)
-{
-	std::vector<int>	v2;
-	std::vector<int>	v3;
+// void	PmergeMe::_vectorMergeInsertSort2 (std::vector<int> &v1)
+// {
+// 	std::vector<int>	v2;
+// 	std::vector<int>	v3;
 
-	if (v1.size() > VEC_MERGE_LIM_HIGH) {
-		_splitVector2(v1, v2, v3);
-		_vectorMergeInsertSort2(v2);
-		_vectorMergeInsertSort2(v3);
+// 	if (v1.size() > VEC_MERGE_LIM_HIGH) {
+// 		_splitVector2(v1, v2, v3);
+// 		_vectorMergeInsertSort2(v2);
+// 		_vectorMergeInsertSort2(v3);
 
-		// _vectorInsertSort(v1);
-		_vectorInsertSort2(v2);
-		_vectorInsertSort2(v3);
-		_vectorMerge2(v1, v2, v3);
-	}
-	else
-		_vectorInsertSort2(v1);
+// 		// _vectorInsertSort(v1);
+// 		_vectorInsertSort2(v2);
+// 		_vectorInsertSort2(v3);
+// 		_vectorMerge2(v1, v2, v3);
+// 	}
+// 	else
+// 		_vectorInsertSort2(v1);
 
-}
+// }
 
-void	PmergeMe::_splitVector2(std::vector<int> &v1, std::vector<int> &v2, std::vector<int> &v3)
-{
-	int	halfSize = v1.size() / 2;
+// void	PmergeMe::_splitVector2(std::vector<int> &v1, std::vector<int> &v2, std::vector<int> &v3)
+// {
+// 	int	halfSize = v1.size() / 2;
 
-	v2.assign(v1.begin() + halfSize, v1.end());
-	v3.assign(v1.begin(), v1.begin() + halfSize);
-}
+// 	v2.assign(v1.begin() + halfSize, v1.end());
+// 	v3.assign(v1.begin(), v1.begin() + halfSize);
+// }
 
-void	PmergeMe::_vectorMerge2(std::vector<int> &v1, std::vector<int> &v2, std::vector<int> &v3)
-{
-	unsigned long int i = 0, j = 0 , k = 0;
+// void	PmergeMe::_vectorMerge2(std::vector<int> &v1, std::vector<int> &v2, std::vector<int> &v3)
+// {
+// 	unsigned long int i = 0, j = 0 , k = 0;
 
-	for (; i < v1.size() && j < v2.size() && k < v3.size(); ++i) {
-		if (v2[j] >= v3[k]) {
-			v1[i] = v3[k++];
-		}
-		else if (v2[j] <= v3[k]) {
-			v1[i] = v2[j++];
-		}
-	}
-	if (i < v1.size()) {
-		while (j < v2.size())
-			v1[i++] = v2[j++];
-		while (k < v3.size())
-			v1[i++] = v3[k++];
-	}
-}
+// 	for (; i < v1.size() && j < v2.size() && k < v3.size(); ++i) {
+// 		if (v2[j] >= v3[k]) {
+// 			v1[i] = v3[k++];
+// 		}
+// 		else if (v2[j] <= v3[k]) {
+// 			v1[i] = v2[j++];
+// 		}
+// 	}
+// 	if (i < v1.size()) {
+// 		while (j < v2.size())
+// 			v1[i++] = v2[j++];
+// 		while (k < v3.size())
+// 			v1[i++] = v3[k++];
+// 	}
+// }
 
-void	PmergeMe::_vectorInsertSort2(std::vector<int> &v)
-{
-	int	tmpVal;
-	vIt	it1, insertPos;
+// void	PmergeMe::_vectorInsertSort2(std::vector<int> &v)
+// {
+// 	int	tmpVal;
+// 	vIt	it1, insertPos;
 
-	for (it1 = v.begin(); it1 != v.end(); it1++)
-	{
-		tmpVal = *it1;
-		insertPos = std::upper_bound(v.begin(), it1, tmpVal);
-		if (insertPos != it1 && it1 != v.end()) {
-			v.erase(it1);
-			v.insert(insertPos, tmpVal);
-		}
-	}
-}
+// 	for (it1 = v.begin(); it1 != v.end(); it1++)
+// 	{
+// 		tmpVal = *it1;
+// 		insertPos = std::upper_bound(v.begin(), it1, tmpVal);
+// 		if (insertPos != it1 && it1 != v.end()) {
+// 			v.erase(it1);
+// 			v.insert(insertPos, tmpVal);
+// 		}
+// 	}
+// }

@@ -12,4 +12,3 @@ int main (int ac, char *av[]){
 }
 
 // make re && ./PmergeMe `shuf -i 1-100000 -n 5000 | tr "\n" " "`
-// try algo with 3 2 9 8 7 10 4 5 5 1 does not work for the moment
