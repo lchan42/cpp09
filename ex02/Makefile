@@ -37,4 +37,6 @@ fclean:	clean
 
 re: fclean all
 
+# 5: make re && ./PmergeMe `shuf -i 1-100000 -n 5000 | tr "\n" " "`
+
 .PHONY: all clean fclean re
