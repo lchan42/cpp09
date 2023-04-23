@@ -5,17 +5,14 @@
 /********************** coplien **********************/
 /*****************************************************/
 
-BitEx::BitEx() : _fileFlag(false){
-	std::cout << "BitEx constructor called" << std::endl;
-}
+BitEx::BitEx() : _fileFlag(false), _dataMapFlag(false), _inputMapFlag(false) { std::cout << "BitEx constructor called" << std::endl; }
 
-BitEx::BitEx(std::string inputPath) : _fileFlag(false){
-	(void)inputPath;
-	// tryOpenFile(inputPath.c_str());
-	std::cout << "BitEx constructor called" << std::endl;
-}
+// BitEx::BitEx(std::string inputPath) : _fileFlag(false){
+// 	(void)inputPath;
+// 	std::cout << "BitEx constructor called" << std::endl;
+// }
 
-// BitEx(BitEx const &cpy);
+BitEx::BitEx(BitEx const &cpy) : _fileFlag(cpy._fileFlag), _dataMapFlag(cpy._dataMapFlag), _inputMapFlag(cpy._inputMapFlag), _dataMap(cpy._dataMap){std::cout << "BitEx constructor called" << std::endl;}
 
 BitEx::~BitEx()
 {
@@ -67,12 +64,35 @@ void BitEx::tryOpenFile(const char *path)
 /********************** compute **********************/
 /*****************************************************/
 
-void	BitEx::compute() {
-	_computeDataCsv();
-	_computeInputTxt(" | ");
+void	BitEx::_buildMap(std::ifstream &ifs, const std::string sep){
+	std::string		line;
+	unsigned int	lineNumber = 0;
+
+	while (std::getline(ifs, line).good() && ++lineNumber){
+		if (_AddInMapIfValid(line, sep) == false){
+			throw MyException(_ERR_DATA_CORRUPTED(line, _ltoa(lineNumber)));
+		}
+	}
 }
 
-void	BitEx::_computeInputTxt(const std::string &sep) {
+bool	BitEx::_AddInMapIfValid(const std::string &str, const std::string sep){
+	std::string 	date, val;
+	std::size_t		sepPos;
+
+	sepPos = str.find_first_of(sep);
+	if (sepPos != std::string::npos)
+	{
+		date = str.substr(0, sepPos);
+		val = str.substr(sepPos + sep.size());
+		if (_checkDate(date) && _checkVal(val, false)){
+			_dataMap[_dateToInt(date)] = strtod(val.c_str(), NULL);
+			return true;
+		}
+	}
+	return false;
+}
+
+void	BitEx::_addInputTxt(const std::string &sep) {
 
 	if (_dataMapFlag == true) {
 		try {
@@ -83,11 +103,36 @@ void	BitEx::_computeInputTxt(const std::string &sep) {
 			return ;
 		}
 		_printResult(sep);
-	} else {
-		std::cout << "error : csv seems corrupted" << std::endl;
+	}
+	// else {
+	// 	std::cout << "error : csv seems corrupted" << std::endl;
+	// }
+}
+
+void BitEx::_addDataCsv() {
+	if (_fileFlag == true) {
+		try {
+			_checkFirstLine(_ifsData, ",");
+			_buildMap(_ifsData, ",");
+			_dataMapFlag = true;
+		}
+		catch (std::exception &e) {
+			std::cout << "error: " << e.what() << std::endl;
+		}
+	}
+	else {
+		std::cout << "error : missing files" << std::endl;
 	}
 }
 
+void	BitEx::compute() {
+	_addDataCsv();
+	_addInputTxt(" | ");
+	_closeFiles();
+}
+/*****************************************************/
+/********************** print ************************/
+/*****************************************************/
 void	BitEx::_printResult(const std::string &sep){
 	std::string		line;
 	std::string		date, val;
@@ -130,36 +175,17 @@ void	BitEx::_printGoodResult(const std::string &date, const std::string &val){
 			std::cout << date << " not in data base (prior starting date )" << std::endl;
 			return ;
 		}
-		else if (convDate > _dataMap.rbegin()->first){
-			std::cout << "convDate >" << "rbegin = " << _dataMap.rbegin()->first << std::endl;
-			result = convVal * _dataMap.end()->second;
-		}
+		else if (convDate > _dataMap.rbegin()->first)
+			result = convVal * (_dataMap.rbegin())->second;
 		else {
-			while (_dataMap.find(convDate) == _dataMap.end()){
+			while (_dataMap.find(convDate) == _dataMap.end())
 				convDate--;
-			}
-			result = convVal * _dataMap[convVal];
+			result = convVal * _dataMap[convDate];
 		}
 	}
+	else
+		result = convVal * _dataMap[convDate];
 	_printer (date, val, convVal, result);
-}
-
-void	BitEx::_printer(const std::string &date, const std::string &valS, const int valI, const double valD) {
-
-	double	result;
-	int 	precision = 2;
-
-	result = valI * valD;
-	// if (result == 0) {
-	// 	precision = 0;
-	// }
-	// std::cout << "val = " << valI  << "rate = " << valD <<std::endl;
-	std::cout	<< date
-				<< " => "
-				<< valS
-				<< " = "
-				<< std::fixed << std::setprecision(precision) << result
-				<< std::endl;
 }
 
 void	BitEx::_printErrResult(const std::string &str, int errorCode){
@@ -168,89 +194,23 @@ void	BitEx::_printErrResult(const std::string &str, int errorCode){
 		" invalide date.",
 		" invalide value.",
 	};
-
 	std::cout << "error: " << str << tab[errorCode] <<std::endl;
 }
 
+void	BitEx::_printer(const std::string &date, const std::string &valS, const int valI, const double valD) {
 
-/*****************************************************/
-/****************** build map ********************/
-/*****************************************************/
+	double	result;
+	int 	precision = 2;
 
-void BitEx::_computeDataCsv() {
-	if (_fileFlag == true) {
-		try {
-			_checkFirstLine(_ifsData, ",");
-			_buildMap(_ifsData, ",");
-			_dataMapFlag = true;
-			// printMap (_dataMap);
-			//printNMap(_dataMap, 300);
-			std::cout << "ready to compute\n" << std::endl;
+	result = valI * valD;
 
-		}
-		catch (std::exception &e) {
-			std::cout << "error: " << e.what() << std::endl;
-		}
-		// _parse(_ifsData, ",");
-	}
-	else {
-		std::cout << "error : missing files" << std::endl;
-	}
+	std::cout	<< date
+				<< " => "
+				<< valS
+				<< " = "
+				<< std::fixed << std::setprecision(precision) << result
+				<< std::endl;
 }
-
-
-// void BitEx::_parse (std::ifstream &ifs, const std::string sep) // real compute function
-// {
-// 	std::string line;
-
-// 	try {
-// 		_checkFirstLine(ifs, sep);
-// 		_buildMap(ifs, sep);
-// 		_dataMapFlag = true;
-// 		// std::cout << "ready to compute\n" << std::endl;
-// 		// printMap (_dataMap);
-
-// 	}
-// 	catch (std::exception &e) {
-// 		std::cout << "error: " << e.what() << std::endl;
-// 	}
-// }
-
-
-void	BitEx::_buildMap(std::ifstream &ifs, const std::string sep){
-	std::string		line;
-	unsigned int	lineNumber = 0;
-
-	while (std::getline(ifs, line).good() && ++lineNumber){
-		if (_AddInMapIfValid(line, sep) == false){
-			throw MyException(_ERR_DATA_CORRUPTED(line, _ltoa(lineNumber)));
-		}
-	}
-}
-
-bool	BitEx::_AddInMapIfValid(const std::string &str, const std::string sep){
-	std::string 	date, val;
-	std::size_t		sepPos;
-
-	sepPos = str.find_first_of(sep);
-	if (sepPos != std::string::npos)
-	{
-		date = str.substr(0, sepPos);
-		val = str.substr(sepPos + sep.size());
-		if (_checkDate(date) && _checkVal(val, false)){
-			_dataMap[_dateToInt(date)] = strtod(val.c_str(), NULL);
-			return true;
-		}
-	}
-	return false;
-}
-
-/*****************************************************/
-/****************** build map ********************/
-/*****************************************************/
-
-
-
 
 /*****************************************************/
 /****************** validity check *******************/
@@ -295,26 +255,20 @@ bool	BitEx::_checkDate(const std::string &date){
 	unsigned int	hyphenCnt = 0;
 
 	if (date.size() > 10) {
-		std::cout << "date size" << std::endl;
 		return false;
 	}	//invalide date (exceed 10 char)
 	for (Itera it = date.begin(); it != date.end(); it++) {
 		if (*it == '-') {hyphenCnt++; if (hyphenCnt > 2){return false;}}
 	}	//invalide date form (more than 2 "-")
 	if (date.find("--") != std::string::npos){
-		// std::cout << "date --" << std::endl;
 		return false;
 	}	//invalide date form
 	else if (date.find_first_not_of("0123456789-") != std::string::npos){
-		// std::cout << "date char not accepted" << std::endl;
 		return false;
 	}	// unvalide char in date
 	else if (_checkDateLimit(date) == false) {
-		// std::cout << "date date limite " << std::endl;
 		return false;
 	}	//unvalide datelimite
-	// std::cout << "check date returning TRUE" << std::endl;
-
 	return true;
 }
 
@@ -325,7 +279,6 @@ unsigned int	BitEx::_checkDateLimit(const std::string &date) {
 
 	std::sscanf(date.c_str(), "%u - %u - %u", &year, &month, &day);
 	if (year < BITCOIN_START_DATE || year > LIM_YEAR || month < 1  || month > LIM_MONTH){
-		// std::cout << "check wrong year or month TRUE" << std::endl;
 		return false;
 	}
 	if (month == 2 && ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0)){
@@ -335,11 +288,8 @@ unsigned int	BitEx::_checkDateLimit(const std::string &date) {
 		maxDayInMonth = tab[month - 1];
 	}
 	if (day < 1 || day > maxDayInMonth){
-		// std::cout << "check wrong day TRUE max day = " << maxDayInMonth << std::endl;
 		return false;
 	}
-	// std::cout << "check date LIMITE TRUE" << std::endl;
-
 	return true;
 }
 
@@ -353,7 +303,7 @@ bool	BitEx::_checkVal(const std::string &val, bool opt){
 	double			convertedVal, supLim;
 
 	for (Itera it = val.begin(); it != val.end(); it++) {
-		if (*it == '.') {dotCnt++; if (dotCnt > 1) {return false;}}
+		if (*it == '.'){dotCnt++; if (dotCnt > 1) {return false;}}
 	}	//invalide date form (more than 1 ".")
 	if (val.find_first_not_of("0123456789.") != std::string::npos){
 		return false;
@@ -364,16 +314,10 @@ bool	BitEx::_checkVal(const std::string &val, bool opt){
 	if (convertedVal > supLim) {
 		return false;
 	}	//invalide converted vak : over limit
-	// std::cout << "check val returning TRUE" << std::endl;
 	return true;
 }
 
-
-
-
-
 /************ type convertion function **************/
-
 std::string	BitEx::_ltoa(long int n){
 	std::stringstream	myStream;
 
@@ -397,6 +341,5 @@ int	BitEx::_dateToInt(const std::string &date){
 			tmp += *it;
 		}
 	}
-	// std::cout << "date to int : " << tmp << std::endl;
 	return atoi(tmp.c_str());
 }

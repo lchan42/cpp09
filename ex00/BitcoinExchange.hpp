@@ -4,8 +4,6 @@
 # define PRICE_HISTORY
 # define PRICE_HISTORY
 
-
-
 # include <iostream>
 # include <map>
 # include <fstream>
@@ -34,23 +32,14 @@ enum e_print_error
 	ERR_MAXENUMVAL
 };
 
-typedef struct s_line{
-	std::string		date;
-	double			val;
-} t_line;
-
-typedef struct s_lineStruct{
-	std::string	test;
-} t_lineStruct;
-
-typedef std::map<int, double>	BitExMap;
-typedef std::string::const_iterator Itera;
+typedef std::map<int, double>		BitExMap;
+typedef std::string::const_iterator	Itera;
 
 class BitEx{
 	public:
 		BitEx();
-		BitEx(std::string inputPath);
-		// BitEx(BitEx const &cpy);
+		// BitEx(std::string inputPath);
+		BitEx(BitEx const &cpy);
 		~BitEx();
 
 		// BitEx & operator=(BitEx const &rhs);
@@ -71,19 +60,19 @@ class BitEx{
 		void			_closeFiles();
 		void			_openFile(const char *path, std::ifstream &fs);
 
-		void			_computeInputTxt(const std::string &sep);
-		void			_computeDataCsv();
+		// add infiles into maps
+		void			_checkFirstLine	(std::ifstream &ifs, const std::string sep);
+		void			_buildMap		(std::ifstream &ifs, const std::string sep);
+		void			_addInputTxt(const std::string &sep);
+		void			_addDataCsv();
+
+		// print
 		void			_printResult(const std::string &sep);
 		void			_printGoodResult(const std::string &date, const std::string &val);
 		void			_printErrResult(const std::string &date, int errorCode);
 		void			_printer(const std::string &date, const std::string &valS, const int valI, const double valD);
 
-		void			_parse			(std::ifstream &ifs, const std::string sep);
-		void			_checkFirstLine	(std::ifstream &ifs, const std::string sep);
-
-		void			_buildMap		(std::ifstream &ifs, const std::string sep);
-
-		// checking ifs errors
+		// validity check
 		bool			_checkLine(const std::string &str, const std::string sep);
 		bool			_checkDate	(const std::string &date);
 		unsigned int	_checkDateLimit(const std::string &date);

@@ -10,7 +10,7 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME	=	cpp09ex00
+NAME	=	btc
 SRCS	=	main.cpp BitcoinExchange.cpp
 HEADER	=	MyException.hpp BitcoinExchange.hpp
 OBJS	=	$(SRCS:.cpp=.o)
