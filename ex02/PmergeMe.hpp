@@ -13,9 +13,7 @@
 
 #define VALID_DIGIT "0123456789"
 #define LIST_MERGE_LIM_HIGH 30
-#define VEC_MERGE_LIM_HIGH 1500
-
-
+#define VEC_MERGE_LIM_HIGH 50
 
 typedef std::vector<int>::iterator	vIt;
 typedef std::list<int>::iterator	listIter;
@@ -24,13 +22,12 @@ class PmergeMe {
 	private :
 		/* variables */
 		bool				_parseFlag;
-		std::vector<int>	_initialList;
-		std::list<int>		_initialList2;
+		std::list<int>		_initialList;
+		std::vector<int>	_initialVector;
 		std::list<int>		_list;
 		std::vector<int>	_vector;
 		timeval				_lTime;
 		timeval				_vTime;
-
 
 		/* parsing */
 		void		_parse( char *tab[]);
@@ -44,13 +41,13 @@ class PmergeMe {
 		void		_mergeList(std::list<int> &list1 , std::list<int> &list2);
 
 		/* std::vector sort */
-		/* algo 3 single vector */
+		/* single vector, using iterator ranges */
 		void	_vectorMergeInsertSort (vIt const & start, vIt const & end);
 		void	_splitVector(std::vector<vIt> & cuts, long long int const size);
 		void	_vectorInsertSort(vIt const &start, vIt const &end);
 		void	_vectorMerge(vIt const & start, vIt const & mid, vIt const & end);
 
-				/* algo 2 better split and merge vector */
+		/* using temporary vectors */
 		void		_vectorMergeInsertSort2(std::vector<int> &v);
 		void		_vectorInsertSort2(std::vector<int> &v);
 		void		_splitVector2(std::vector<int> &v1, std::vector<int> &v2, std::vector<int> &v3);
@@ -59,9 +56,9 @@ class PmergeMe {
 
 		/* tools */
 		listIter	_listIterPrev(listIter it);
-		void	_getTime(timeval &startTime);
-		void	_timeDiff(timeval &startTime);
-		void	_printResult();
+		void		_getTime(timeval &startTime);
+		void		_timeDiff(timeval &startTime);
+		void		_printResult();
 
 		/* checker*/
 		void		_checkResult();
@@ -95,12 +92,7 @@ void	printStl(T stl){
 #endif
 
 
-		/* algo 2 better split and merge vector */
-		// void		_vectorInsertSort(std::vector<int> &v);
-		// void		_vectorMergeSort(std::vector<int> &v);
-		// void		_splitVector(std::vector<int> &v1, std::vector<int> &v2, std::vector<int> &v3);
-		// void		_mergeVector(std::vector<int> &v1, std::vector<int> &v2, std::vector<int> &v3);
-
-		/** algo 1 time for 3000 : */
-		// void		_splitVector(std::vector<int> &v1, std::vector<int> &v2);
-		// void		_mergeVector(std::vector<int> &v1, std::vector<int> &v2);
+	/* first created algo */
+	// void		_vectorMergeSort (std::vector<int> &v1)
+	// void		_splitVector(std::vector<int> &v1, std::vector<int> &v2);
+	// void		_mergeVector(std::vector<int> &v1, std::vector<int> &v2);
