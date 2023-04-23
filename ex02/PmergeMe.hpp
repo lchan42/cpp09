@@ -50,6 +50,13 @@ class PmergeMe {
 		void	_vectorInsertSort(vIt const &start, vIt const &end);
 		void	_vectorMerge(vIt const & start, vIt const & mid, vIt const & end);
 
+				/* algo 2 better split and merge vector */
+		void		_vectorMergeInsertSort2(std::vector<int> &v);
+		void		_vectorInsertSort2(std::vector<int> &v);
+		void		_splitVector2(std::vector<int> &v1, std::vector<int> &v2, std::vector<int> &v3);
+		void		_vectorMerge2(std::vector<int> &v1, std::vector<int> &v2, std::vector<int> &v3);
+
+
 		/* tools */
 		listIter	_listIterPrev(listIter it);
 		void	_getTime(timeval &startTime);
