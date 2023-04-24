@@ -53,6 +53,8 @@ void	rpn::_execOpe(const char c){
 			_myStack.push(ope2 * ope1);
 			break;
 		case '/':
+			if (ope1 == 0)
+				throw std::invalid_argument(ERR_TOKEN_DIVZERO);
 			_myStack.push(ope2 / ope1);
 			break;
 	}

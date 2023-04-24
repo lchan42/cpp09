@@ -4,7 +4,6 @@
 /*****************************************************/
 /********************** coplien **********************/
 /*****************************************************/
-
 BitEx::BitEx() : _fileFlag(false), _dataMapFlag(false), _inputMapFlag(false) { std::cout << "BitEx constructor called" << std::endl; }
 
 BitEx::BitEx(BitEx const &cpy) : _fileFlag(cpy._fileFlag), _dataMapFlag(cpy._dataMapFlag), _inputMapFlag(cpy._inputMapFlag), _dataMap(cpy._dataMap){std::cout << "BitEx constructor called" << std::endl;}
@@ -23,7 +22,6 @@ BitEx & BitEx::operator=(BitEx const &rhs){
 /*****************************************************/
 /********************* open files ********************/
 /*****************************************************/
-
 void BitEx::_closeFiles()
 {
 	if (_ifsData.is_open()) {
@@ -61,7 +59,6 @@ void BitEx::tryOpenFile(const char *path)
 /*****************************************************/
 /********************** compute **********************/
 /*****************************************************/
-
 void	BitEx::compute() {
 	_addDataCsv();
 	_addInputTxt(" | ");
@@ -163,7 +160,6 @@ void	BitEx::_printGoodResult(const std::string &date, const std::string &val){
 	convVal = atoi(val.c_str());
 	it = _dataMap.find(convDate);
 	if (it == _dataMap.end()) {
-
 		if (convDate < _dataMap.begin()->first){
 			std::cout << date << " not in data base (prior starting date )" << std::endl;
 			return ;
@@ -192,7 +188,6 @@ void	BitEx::_printErrResult(const std::string &str, int errorCode){
 }
 
 void	BitEx::_printer(const std::string &date, const std::string &valS, const int valI, const double valD) {
-
 	double	result;
 	int 	precision = 2;
 
@@ -208,7 +203,6 @@ void	BitEx::_printer(const std::string &date, const std::string &valS, const int
 /*****************************************************/
 /****************** validity check *******************/
 /*****************************************************/
-
 /* this function check if the first line of each file is correct or not */
 void	BitEx::_checkFirstLine(std::ifstream &ifs, const std::string sep){
 
@@ -224,7 +218,6 @@ void	BitEx::_checkFirstLine(std::ifstream &ifs, const std::string sep){
 }
 
 bool	BitEx::_checkLine(const std::string &str, const std::string sep){
-
 	std::string 	date, val;
 	std::size_t		sepPos;
 
@@ -233,53 +226,42 @@ bool	BitEx::_checkLine(const std::string &str, const std::string sep){
 	{
 		date = str.substr(0, sepPos);
 		val = str.substr(sepPos + sep.size());
-		if (_checkDate(date) && _checkVal(val, false)){
+		if (_checkDate(date) && _checkVal(val, false))
 			return true;
-		}
 	}
 	return false;
 }
 
 bool	BitEx::_checkDate(const std::string &date){
-
 	unsigned int	hyphenCnt = 0;
 
-	if (date.size() > 10) {
+	if (date.size() > 10) //invalide date (exceed 10 char)
 		return false;
-	}	//invalide date (exceed 10 char)
-	for (Itera it = date.begin(); it != date.end(); it++) {
+	for (Itera it = date.begin(); it != date.end(); it++) //invalide date form (more than 2 "-")
 		if (*it == '-') {hyphenCnt++; if (hyphenCnt > 2){return false;}}
-	}	//invalide date form (more than 2 "-")
-	if (date.find("--") != std::string::npos){
+	if (date.find("--") != std::string::npos) //invalide date form
 		return false;
-	}	//invalide date form
-	else if (date.find_first_not_of("0123456789-") != std::string::npos){
+	else if (date.find_first_not_of("0123456789-") != std::string::npos) // unvalide char in date
 		return false;
-	}	// unvalide char in date
-	else if (_checkDateLimit(date) == false) {
+	else if (_checkDateLimit(date) == false) //unvalide datelimite
 		return false;
-	}	//unvalide datelimite
+
 	return true;
 }
 
 unsigned int	BitEx::_checkDateLimit(const std::string &date) {
-
 	unsigned int	year, month, day, maxDayInMonth;
 	unsigned int	tab[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
 	std::sscanf(date.c_str(), "%u - %u - %u", &year, &month, &day);
-	if (year < BITCOIN_START_DATE || year > LIM_YEAR || month < 1  || month > LIM_MONTH){
+	if (year < BITCOIN_START_DATE || year > LIM_YEAR || month < 1  || month > LIM_MONTH)
 		return false;
-	}
-	if (month == 2 && ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0)){
+	if (month == 2 && ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0))
 		maxDayInMonth = 29;
-	}
-	else {
+	else
 		maxDayInMonth = tab[month - 1];
-	}
-	if (day < 1 || day > maxDayInMonth){
+	if (day < 1 || day > maxDayInMonth)
 		return false;
-	}
 	return true;
 }
 
@@ -326,10 +308,8 @@ std::string	_ntoa(T number){
 int	BitEx::_dateToInt(const std::string &date){
 	std::string tmp;
 
-	for (Itera it = date.begin(); it != date.end(); it++) {
-		if (*it != '-') {
+	for (Itera it = date.begin(); it != date.end(); it++)
+		if (*it != '-')
 			tmp += *it;
-		}
-	}
 	return atoi(tmp.c_str());
 }

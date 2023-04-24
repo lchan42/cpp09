@@ -38,9 +38,7 @@ void	PmergeMe::compute(char *tab[])
 		_listMergeSort(_list);
 		_timeDiff(_lTime);
 		_getTime(_vTime);
-		// _vectorMergeInsertSort2(_vector);
 		_vectorMergeInsertSort(_vector, _vector.begin(), _vector.end() - 1);
-		// std::sort(_vector.begin(), _vector.end());
 		_timeDiff(_vTime);
 		_printResult();
 	}
@@ -52,8 +50,8 @@ void	PmergeMe::_printResult()
 	std::list<int>		initialL;
 	std::vector<int>	initialV;
 
-	// std::cout << "before : "; printStl(_initialList);
-	// std::cout << "after list : "; printStl (_list);
+	std::cout << "before : "; printStl(_initialList);
+	std::cout << "after : "; printStl (_list);
 	// std::cout << "after vector: "; printStl (_vector);
 	std::cout	<< "Time to process a range of " << _list.size()
 				<< " elements with std::list : " << _lTime.tv_sec * 1000000 + _lTime.tv_usec
@@ -183,7 +181,7 @@ void	PmergeMe::_vectorMerge(vecInt & v, vIt const &start, vIt const & mid, vIt c
 		else
 			++insertPos;
 	}
-
+	/**note : using upper_bound function is supprisingly not faster than iterator++ */
 	// int	tmpVal;
 	// vIt	insertPos;
 

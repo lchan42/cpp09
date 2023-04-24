@@ -13,14 +13,13 @@ export test8="1 2 3 4 + + + + + "
 export test9="1 2 3 4 + "
 export test10="1 2 3 4 + + + "
 export test11="1 2 3 11 + + + "
-
-
 export test12="5 2 + 3 *"
 export test13="8 4 / 2 -"
 export test14="3 7 * 4 2 / -"
 export test15="9 2 ^ 1 + 5 *"
 export test16="6 2 * 3 / 4 +"
-
+export test17="1 2 3 0 + + / "
+export test18="1 2 0 3 / / + "
 make re
 
 echo "$> ./RPN " "$subject1"
@@ -82,4 +81,10 @@ echo "$> ./RPN " "$test11"
  #echo $'\n'
  echo "$> ./RPN " "$test16"
  ./RPN "$test16"
+ #echo $'\n'
+ echo "$> ./RPN " "$test17"
+ ./RPN "$test17"
+ #echo $'\n'
+ echo "$> ./RPN " "$test18"
+ ./RPN "$test18"
  #echo $'\n'
