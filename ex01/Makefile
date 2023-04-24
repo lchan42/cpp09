@@ -6,7 +6,7 @@
 #    By: lchan <lchan@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/09/16 15:50:50 by lchan             #+#    #+#              #
-#    Updated: 2023/03/29 13:46:57 by lchan            ###   ########.fr        #
+#    Updated: 2023/04/24 15:10:28 by lchan            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ SRCS	=	main.cpp RPN.cpp
 HEADER	=	RPN.hpp
 OBJS	=	$(SRCS:.cpp=.o)
 COMPIL	=	c++
-FLAGS	=	-std=c++98 -Wall -Wextra  -Wno-unused -g3
+FLAGS	=	-std=c++98 -Wall -Wextra -Werror -g3 #-Wno-unused
 
 #-Werror
 

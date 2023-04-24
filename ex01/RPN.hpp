@@ -28,8 +28,8 @@ class rpn {
 	public:
 		rpn();
 		rpn(rpn &cpy);
-		rpn&	operator=(const rpn &rhs);
 		~rpn();
+		rpn&	operator=(const rpn &rhs);
 
 		void compute(char *str);
 };

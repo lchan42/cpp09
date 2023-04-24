@@ -1,20 +1,12 @@
 #include "RPN.hpp"
 
-rpn::rpn(){
-	//std::cout << "rpn constructor called"<<std::endl;
-}
+rpn::rpn() {/*std::cout << "rpn constructor called"<<std::endl;*/}
 
-rpn::rpn(rpn &cpy){
-	//std::cout << "rpn copy constructor called" << std::endl;
-}
+rpn::rpn(rpn &cpy) : _myStack(cpy._myStack) { /*std::cout << "rpn copy constructor called" << std::endl;*/}
 
-rpn& rpn::operator=(const rpn &rhs){
-	return *this;
-}
+rpn& rpn::operator=(const rpn &rhs) {_myStack = rhs._myStack; return *this;}
 
-rpn::~rpn(){
-	//std::cout << "rpn destructor called" << std::endl;
-}
+rpn::~rpn(){ /*std::cout << "rpn destructor called" << std::endl; */}
 
 void	rpn::compute(char *s){
 
@@ -22,7 +14,6 @@ void	rpn::compute(char *s){
 
 	token = strtok(s, " ");
 	while (token != NULL){
-		// std::cout << "token = " << token << std::endl;
 		try {
 			_dealWithToken(token);
 		}
@@ -44,7 +35,7 @@ bool	rpn::_isOperator(const char c){
 
 void	rpn::_execOpe(const char c){
 
-	int	ope1, ope2, result;
+	int	ope1, ope2;
 
 	ope1 = _myStack.top();
 	_myStack.pop();
