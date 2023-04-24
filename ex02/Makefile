@@ -6,7 +6,7 @@
 #    By: lchan <lchan@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/09/16 15:50:50 by lchan             #+#    #+#              #
-#    Updated: 2023/04/22 12:16:29 by lchan            ###   ########.fr        #
+#    Updated: 2023/04/24 15:10:43 by lchan            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ SRCS	=	main.cpp PmergeMe.cpp
 HEADER	=	PmergeMe.hpp
 OBJS	=	$(SRCS:.cpp=.o)
 COMPIL	=	c++
-FLAGS	=	-std=c++98 -Wall -Wextra  -Wno-unused -g3
+FLAGS	=	-std=c++98 -Wall -Wextra -Werror -g3 #-Wno-unused
 
 #-Werror
 

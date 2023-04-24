@@ -20,10 +20,3 @@ int	main (int ac, char **av)
 		std::cout << "try again with correct imput" << std::endl;
 	}
 }
-
-
-
-	// BitEx.compute();
-	// else {
-	// 	std::cout << "try again with correct imput" << std::endl;
-	// }

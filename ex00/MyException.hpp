@@ -5,13 +5,11 @@
 #include <iostream>
 
 // note : throw() in "virtual ~MyException() throw()" means that the function will not throw expection
-// note : virtual ~MyException il mendatory because of the ineritance of the class
-// note : this class il a expcetion. I respected the copien form even if it il completly useless here.
+// note : virtual ~MyException is mandatory because of the ineritance of the class
+// note : I respected the copien form even if it is completly useless here.
 // note : there is no .cpp here. Everything is here.
-// note : this class is a personnalised excetion class.
+// note : this class is a personalised exception class.
 // note : std::exception what() prototype is "virtual const char* what() const throw();"
-
-
 
 #define _RPL_OPENFILE(s1) "[" + std::string(s1) + "]" + " : open success"
 #define _ERR_OPENFILE(s1) "[" + std::string(s1) + "]" + " : fail to open "

@@ -7,20 +7,18 @@
 
 BitEx::BitEx() : _fileFlag(false), _dataMapFlag(false), _inputMapFlag(false) { std::cout << "BitEx constructor called" << std::endl; }
 
-// BitEx::BitEx(std::string inputPath) : _fileFlag(false){
-// 	(void)inputPath;
-// 	std::cout << "BitEx constructor called" << std::endl;
-// }
-
 BitEx::BitEx(BitEx const &cpy) : _fileFlag(cpy._fileFlag), _dataMapFlag(cpy._dataMapFlag), _inputMapFlag(cpy._inputMapFlag), _dataMap(cpy._dataMap){std::cout << "BitEx constructor called" << std::endl;}
 
-BitEx::~BitEx()
-{
-	_closeFiles();
-	std::cout << "BitEx destructor called" << std::endl;
-}
+BitEx::~BitEx(){ _closeFiles(); std::cout << "BitEx destructor called" << std::endl; }
 
-// BitEx & operator=(BitEx const &rhs);
+BitEx & BitEx::operator=(BitEx const &rhs){
+
+	_fileFlag 		= rhs._fileFlag;
+	_dataMapFlag	= rhs._dataMapFlag;
+	_inputMapFlag	= rhs._inputMapFlag;
+	_dataMap		= rhs._dataMap;
+	return *this;
+}
 
 /*****************************************************/
 /********************* open files ********************/
@@ -64,6 +62,12 @@ void BitEx::tryOpenFile(const char *path)
 /********************** compute **********************/
 /*****************************************************/
 
+void	BitEx::compute() {
+	_addDataCsv();
+	_addInputTxt(" | ");
+	_closeFiles();
+}
+
 void	BitEx::_buildMap(std::ifstream &ifs, const std::string sep){
 	std::string		line;
 	unsigned int	lineNumber = 0;
@@ -104,9 +108,6 @@ void	BitEx::_addInputTxt(const std::string &sep) {
 		}
 		_printResult(sep);
 	}
-	// else {
-	// 	std::cout << "error : csv seems corrupted" << std::endl;
-	// }
 }
 
 void BitEx::_addDataCsv() {
@@ -120,16 +121,11 @@ void BitEx::_addDataCsv() {
 			std::cout << "error: " << e.what() << std::endl;
 		}
 	}
-	else {
+	else
 		std::cout << "error : missing files" << std::endl;
-	}
 }
 
-void	BitEx::compute() {
-	_addDataCsv();
-	_addInputTxt(" | ");
-	_closeFiles();
-}
+
 /*****************************************************/
 /********************** print ************************/
 /*****************************************************/
@@ -144,24 +140,21 @@ void	BitEx::_printResult(const std::string &sep){
 		{
 			date = line.substr(0, sepPos);
 			val = line.substr(sepPos + sep.size());
-			if (!_checkDate(date)){
+			if (!_checkDate(date))
 				_printErrResult (date, ERR_INVALIDE_DATE);
-			}
-			else if (!_checkVal(val, true)) {
+			else if (!_checkVal(val, true))
 				_printErrResult (val, ERR_INVALIDE_VALUE);
-			}
-			else {
+			else
 				_printGoodResult(date, val);
-			}
 		}
-		else {
+		else if (line.empty())
+			_printErrResult (line, ERR_EMPTY_LINE);
+		else
 			_printErrResult (line, ERR_SEPARATOR);
-		}
 	}
 }
 
 void	BitEx::_printGoodResult(const std::string &date, const std::string &val){
-
 	int					convDate, convVal;
 	double				result;
 	BitExMap::iterator	it;
@@ -190,6 +183,7 @@ void	BitEx::_printGoodResult(const std::string &date, const std::string &val){
 
 void	BitEx::_printErrResult(const std::string &str, int errorCode){
 	std::string tab[ERR_MAXENUMVAL] = {
+		" empty line.",
 		" no separator.",
 		" invalide date.",
 		" invalide value.",
@@ -203,7 +197,6 @@ void	BitEx::_printer(const std::string &date, const std::string &valS, const int
 	int 	precision = 2;
 
 	result = valI * valD;
-
 	std::cout	<< date
 				<< " => "
 				<< valS
@@ -240,13 +233,10 @@ bool	BitEx::_checkLine(const std::string &str, const std::string sep){
 	{
 		date = str.substr(0, sepPos);
 		val = str.substr(sepPos + sep.size());
-		// std::cout<<  "date = " << date << " val = " << val << std::endl;
-
 		if (_checkDate(date) && _checkVal(val, false)){
 			return true;
 		}
 	}
-	// std::cout << "check string returning false" << std::endl;
 	return false;
 }
 

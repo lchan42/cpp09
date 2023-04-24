@@ -2,7 +2,7 @@
 #include <vector>
 
 /* testing iterator insert and erase*/
-/* this test is not part of the subject. Its here as a reminder of how vector works */
+/* this test is not part of the subject. Its only here as a reminder on how vector works */
 
 int main (void)
 {

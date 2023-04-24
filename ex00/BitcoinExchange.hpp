@@ -26,6 +26,7 @@ enum e_date_limite
 
 enum e_print_error
 {
+	ERR_EMPTY_LINE,
 	ERR_SEPARATOR,
 	ERR_INVALIDE_DATE,
 	ERR_INVALIDE_VALUE,
@@ -38,11 +39,10 @@ typedef std::string::const_iterator	Itera;
 class BitEx{
 	public:
 		BitEx();
-		// BitEx(std::string inputPath);
 		BitEx(BitEx const &cpy);
 		~BitEx();
 
-		// BitEx & operator=(BitEx const &rhs);
+		BitEx & operator=(BitEx const &rhs);
 		void	tryOpenFile(const char *path);
 		void	compute();
 
