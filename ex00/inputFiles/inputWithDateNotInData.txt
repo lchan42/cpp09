@@ -18,3 +18,14 @@ date | value
 2018-10-10 | 1
 2018-02-29 | 1
 2022-04-29 | 1
+q
+Werror
+qqqq-qq-qq | 1
+qweqweqweqweqweqwe
+qweqweqweqeqweqwe | qweqweqweqwe
+2021/04/29 | qweqwqweqwe
+2022-04-29 | q
+2022-04-29 | -1
+2022-04-29 | -1000
+2022-04-29 | 1000.1
+2022-04-29 | 1000

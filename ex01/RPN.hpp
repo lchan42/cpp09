@@ -1,6 +1,6 @@
 #ifndef RPN_HPP
 # define RPN_HPP
- 
+
 # include <iostream>
 # include <stack>
 # include <string.h>
@@ -8,7 +8,7 @@
 # include <stdio.h>
 # include <exception>
 # include <cstdlib>
- 
+
 # define VALID_CHAR "0123456789+-*/"
 # define ERR_TOKEN_SIZE(str) "invalid argument: \""+ str + "\" numbers cant exceed 10 and each element must be space separated"
 # define ERR_TOKEN_CHAR(str) "invalid char: \"" + str + "\""
