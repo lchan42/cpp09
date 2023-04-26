@@ -52,7 +52,7 @@ void	PmergeMe::_printResult()
 
 	std::cout << "before : "; printStl(_initialList);
 	std::cout << "after : "; printStl (_list);
-	// std::cout << "after vector: "; printStl (_vector);
+
 	std::cout	<< "Time to process a range of " << _list.size()
 				<< " elements with std::list : " << _lTime.tv_sec * 1000000 + _lTime.tv_usec
 				<< " us" <<  std::endl;
@@ -61,16 +61,16 @@ void	PmergeMe::_printResult()
 				<< " elements with std::vector : " << _vTime.tv_sec * 1000000 + _vTime.tv_usec
 				<< " us" << std::endl;
 
-	/** to compare with sort methode but outside of the class */
+	/** to compare with other sorting algo */
 	std::cout << std::endl; std::cout << std::endl;
-	std::cout << "this part is not part of the subject. It shows the sort time of the same list but the list is not stored in the class" << std::endl;
+	std::cout << "this part is not asked by subject. It shows the sort time of the same list but with container 's methods" << std::endl;
 
-	// std::cout << std::endl;
-	// initialL = _initialList;
-	// _getTime(compTime);
-	// initialL.sort();
-	// _timeDiff(compTime);
-	// std::cout << "Sort list " << initialL.size() << " with std::sort : " << compTime.tv_sec * 1000000 + compTime.tv_usec << " us" <<  std::endl;
+	std::cout << std::endl;
+	initialL = _initialList;
+	_getTime(compTime);
+	initialL.sort();
+	_timeDiff(compTime);
+	std::cout << "Sort list " << initialL.size() << " with std::sort : " << compTime.tv_sec * 1000000 + compTime.tv_usec << " us" <<  std::endl;
 
 	// initialL = _initialList;
 	// _getTime(compTime);
@@ -78,18 +78,17 @@ void	PmergeMe::_printResult()
 	// _timeDiff(compTime);
 	// std::cout << "Sort list " << initialL.size() << " with MyListSort : " << compTime.tv_sec * 1000000 + compTime.tv_usec << " us" <<  std::endl;
 
-	std::cout << std::endl;
 	initialV = _initialVector;
 	_getTime(compTime);
 	std::sort(initialV.begin(), initialV.end());
 	_timeDiff(compTime);
 	std::cout << "Sort vector " << initialV.size() << " with std::sort : " << compTime.tv_sec * 1000000 + compTime.tv_usec << " us" <<  std::endl;
 
-	initialV = _initialVector;
-	_getTime(compTime);
-	_vectorMergeInsertSort(initialV, initialV.begin(), initialV.end() - 1);
-	_timeDiff(compTime);
-	std::cout << "Sort vector " << initialV.size() << " with MyVectorSort : " << compTime.tv_sec * 1000000 + compTime.tv_usec << " us" <<  std::endl;
+	// initialV = _initialVector;
+	// _getTime(compTime);
+	// _vectorMergeInsertSort(initialV, initialV.begin(), initialV.end() - 1);
+	// _timeDiff(compTime);
+	// std::cout << "Sort vector " << initialV.size() << " with MyVectorSort : " << compTime.tv_sec * 1000000 + compTime.tv_usec << " us" <<  std::endl;
 
 	// initialV = _initialVector;
 	// _getTime(compTime);

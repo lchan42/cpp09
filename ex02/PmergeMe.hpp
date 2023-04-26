@@ -15,7 +15,6 @@
 #define LIST_MERGE_LIM_HIGH 30
 #define VEC_MERGE_LIM_HIGH 2500
 
-
 typedef std::vector<int>			vecInt;
 typedef std::vector<int>::iterator	vIt;
 typedef std::list<int>::iterator	listIter;
