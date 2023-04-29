@@ -188,15 +188,16 @@ void	BitEx::_printErrResult(const std::string &str, int errorCode){
 }
 
 void	BitEx::_printer(const std::string &date, const std::string &valS, const int valI, const double valD) {
-	double	result;
+	// double	result;
 	int 	precision = 2;
 
-	result = valI * valD;
+	(void) valI;
+	// result = valI * valD;
 	std::cout	<< date
 				<< " => "
 				<< valS
 				<< " = "
-				<< std::fixed << std::setprecision(precision) << result
+				<< std::fixed << std::setprecision(precision) << valD
 				<< std::endl;
 }
 
